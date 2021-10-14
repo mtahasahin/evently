@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 src/main/resources/application-dev.yml
+.jpb/
 
 ### STS ###
 .apt_generated
