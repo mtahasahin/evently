@@ -13,6 +13,8 @@ public interface UserRepository extends JpaRepository<AppUser, Long> {
     void deleteByUsername(String username);
 
     boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
+
 
     int countAppUsersByUsernameContaining(String username);
 
