@@ -5,8 +5,7 @@ import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -39,6 +38,48 @@ public class AppUser implements UserDetails, CredentialsContainer {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserProfile userProfile;
+
+    @OneToMany(
+            mappedBy = "following",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<FollowerFollowing> followers = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "follower",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<FollowerFollowing> followings = new ArrayList<>();
+
+    public void addFollower(AppUser user, boolean confirmed) {
+        FollowerFollowing followerFollowing = new FollowerFollowing(user,this, confirmed);
+        followers.add(followerFollowing);
+        user.followings.add(followerFollowing);
+    }
+
+    public void removeFollower(AppUser user){
+        for(Iterator<FollowerFollowing> iterator = followers.iterator(); iterator.hasNext(); ){
+            FollowerFollowing followerFollowing = iterator.next();
+
+            if(followerFollowing.getFollowing().equals(this) &&
+            followerFollowing.getFollower().equals(user)){
+                iterator.remove();
+                followerFollowing.getFollower().getFollowings().remove(followerFollowing);
+                followerFollowing.setFollower(null);
+                followerFollowing.setFollowing(null);
+            }
+        }
+    }
+
+    public boolean isFollowing(AppUser user){
+        return followings.stream().anyMatch(e -> e.getFollowing() == user && e.isConfirmed());
+    }
+
+    public boolean hasFollowingRequest(AppUser user){
+        return followings.stream().anyMatch(e -> e.getFollowing() == user && !e.isConfirmed());
+    }
 
     @Override
     public boolean isAccountNonExpired() {
