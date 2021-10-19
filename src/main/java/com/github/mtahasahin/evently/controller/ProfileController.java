@@ -1,6 +1,7 @@
 package com.github.mtahasahin.evently.controller;
 
 import com.github.mtahasahin.evently.dto.UserDto;
+import com.github.mtahasahin.evently.interfaces.Profile;
 import com.github.mtahasahin.evently.service.UserService;
 import com.github.mtahasahin.evently.wrapper.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,11 @@ public class ProfileController {
     @GetMapping
     public UserDto getProfile(Authentication authentication) {
         return userService.getUser(authentication.getName());
+    }
+
+    @GetMapping(path = "/{username}")
+    public Profile getProfiled(Authentication authentication, @PathVariable String username) {
+        return userService.getProfile(authentication.getName(), username);
     }
 
     @PutMapping
