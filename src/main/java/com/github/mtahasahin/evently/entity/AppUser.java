@@ -39,6 +39,24 @@ public class AppUser implements UserDetails, CredentialsContainer {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserProfile userProfile;
 
+    @OneToMany(mappedBy = "organizer", orphanRemoval = true)
+    private Set<Event> organizedEvents = new HashSet<>();
+
+    public boolean isOrganizing(Event event){
+        return organizedEvents.contains(event);
+    }
+
+    @OneToMany(mappedBy = "applicant", orphanRemoval = true)
+    private Set<EventApplication> eventApplications = new HashSet<>();
+
+    public boolean isJoiningEvent(Event event){
+        return eventApplications.stream().anyMatch(e -> e.getEvent() == event && e.isConfirmed());
+    }
+
+    public boolean isWaitingForApprovalForEvent(Event event){
+        return eventApplications.stream().anyMatch(e -> e.getEvent() == event && !e.isConfirmed());
+    }
+
     @OneToMany(
             mappedBy = "following",
             cascade = CascadeType.ALL,

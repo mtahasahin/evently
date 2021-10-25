@@ -21,7 +21,7 @@ public class UserProfile {
     private String name;
     private LocalDate dateOfBirth;
     private LocalDateTime registrationDate;
-    private boolean isProfilePublic;
+    private boolean profilePublic;
     private String about;
     private String websiteUrl;
     private String twitterUsername;

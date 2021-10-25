@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1635174713148-1" author="mustafa (generated)">
+        <createTable tableName="event_applications">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_event_applications"/>
+            </column>
+            <column name="event_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="confirmed" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1635174713148-2" author="mustafa (generated)">
+        <createTable tableName="event_question_answers">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_event_question_answers"/>
+            </column>
+            <column name="question_id" type="BIGINT"/>
+            <column name="event_application_id" type="BIGINT"/>
+            <column name="answer" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1635174713148-3" author="mustafa (generated)">
+        <createTable tableName="eventquestions">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_eventquestions"/>
+            </column>
+            <column name="event_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="INT"/>
+            <column name="question_order" type="INT"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="required" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1635174713148-4" author="mustafa (generated)">
+        <createTable tableName="events">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_events"/>
+            </column>
+            <column name="organizer_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="slug" type="VARCHAR(255)"/>
+            <column name="timezone" type="VARCHAR(255)"/>
+            <column name="start_date" type="DATETIME"/>
+            <column name="end_date" type="DATETIME"/>
+            <column name="image_path" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="event_location_type" type="INT"/>
+            <column name="location" type="VARCHAR(255)"/>
+            <column name="event_url" type="VARCHAR(255)"/>
+            <column name="language" type="VARCHAR(255)"/>
+            <column name="visibility" type="INT"/>
+            <column name="key" type="VARCHAR(255)"/>
+            <column name="limited" type="BOOLEAN"/>
+            <column name="attendee_limit" type="INT"/>
+            <column name="approval_required" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1635174713148-5" author="mustafa (generated)">
+        <renameColumn tableName="userprofiles" oldColumnName="is_profile_public" newColumnName="profile_public"/>
+    </changeSet>
+    <changeSet id="1635174713148-6" author="mustafa (generated)">
+        <createIndex indexName="IX_pk_follower_following" tableName="follower_following" unique="true">
+            <column name="follower_id"/>
+            <column name="following_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1635174713148-7" author="mustafa (generated)">
+        <createIndex indexName="idx_474bd7a15f6168ba7cee00e6b" tableName="events" unique="true">
+            <column name="slug"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1635174713148-9" author="mustafa (generated)">
+        <createIndex indexName="idx_72f7375f66b0c11a1275d5682" tableName="event_applications">
+            <column name="event_id"/>
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1635174713148-10" author="mustafa (generated)">
+        <createIndex indexName="idx_cc6b109a9acb676bf55ea067d" tableName="event_question_answers">
+            <column name="event_application_id"/>
+            <column name="question_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1635174713148-12" author="mustafa (generated)">
+        <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="eventquestions"
+                                 constraintName="FK_EVENTQUESTIONS_ON_EVENT" referencedColumnNames="id"
+                                 referencedTableName="events"/>
+
+        <createIndex indexName="idx_ea1bd7f5cd7bcebac62d412ca" tableName="eventquestions">
+            <column name="event_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1635174713148-13" author="mustafa (generated)">
+        <addForeignKeyConstraint baseColumnNames="organizer_id" baseTableName="events"
+                                 constraintName="FK_EVENTS_ON_ORGANIZER" referencedColumnNames="id"
+                                 referencedTableName="users"/>
+
+        <createIndex indexName="idx_71dd93c4311c7455b6d448431" tableName="events">
+            <column name="organizer_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1635174713148-14" author="mustafa (generated)">
+        <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="event_applications"
+                                 constraintName="FK_EVENT_APPLICATIONS_ON_EVENT" referencedColumnNames="id"
+                                 referencedTableName="events"/>
+    </changeSet>
+    <changeSet id="1635174713148-15" author="mustafa (generated)">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="event_applications"
+                                 constraintName="FK_EVENT_APPLICATIONS_ON_USER" referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1635174713148-16" author="mustafa (generated)">
+        <addForeignKeyConstraint baseColumnNames="event_application_id" baseTableName="event_question_answers"
+                                 constraintName="FK_EVENT_QUESTION_ANSWERS_ON_EVENT_APPLICATION"
+                                 referencedColumnNames="id" referencedTableName="event_applications"/>
+    </changeSet>
+    <changeSet id="1635174713148-17" author="mustafa (generated)">
+        <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="event_question_answers"
+                                 constraintName="FK_EVENT_QUESTION_ANSWERS_ON_QUESTION" referencedColumnNames="id"
+                                 referencedTableName="eventquestions"/>
+    </changeSet>
+
+</databaseChangeLog>
