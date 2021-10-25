@@ -1,6 +1,8 @@
 package com.github.mtahasahin.evently.entity;
 
+import com.github.mtahasahin.evently.validator.TimeZone;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -22,6 +24,13 @@ public class UserProfile {
     private LocalDate dateOfBirth;
     private LocalDateTime registrationDate;
     private boolean profilePublic;
+    @Length(max = 40)
+    private String location;
+    @TimeZone
+    @Length(max = 40)
+    private String timezone;
+    @Length(max = 40)
+    private String language;
     private String about;
     private String websiteUrl;
     private String twitterUsername;
