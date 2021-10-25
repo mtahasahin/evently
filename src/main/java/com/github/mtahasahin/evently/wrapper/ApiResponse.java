@@ -16,17 +16,17 @@ import java.util.*;
 public class ApiResponse<T> implements Serializable {
     private T data;
     private ResponseResultType resultType;
-    private List<String> messages;
+    private List<Object> messages;
 
     public static <T> ApiResponse<T> Success(T data){
         return new ApiResponse<>(data, ResponseResultType.SUCCESS, new ArrayList<>());
     }
 
-    public static <T> ApiResponse<T> Success(T data, String message){
+    public static <T> ApiResponse<T> Success(T data, Object message){
         return new ApiResponse<>(data, ResponseResultType.SUCCESS, new ArrayList<>(){{add(message);}});
     }
 
-    public static <T> ApiResponse<T> Success(T data, List<String> messages){
+    public static <T> ApiResponse<T> Success(T data, List<Object> messages){
         return new ApiResponse<>(data, ResponseResultType.SUCCESS, messages);
     }
 
@@ -34,11 +34,11 @@ public class ApiResponse<T> implements Serializable {
         return new ApiResponse<>(data, ResponseResultType.ERROR, new ArrayList<>(){{add("Error");}});
     }
 
-    public static <T> ApiResponse<T> Error(T data, String message){
+    public static <T> ApiResponse<T> Error(T data, Object message){
         return new ApiResponse<>(data, ResponseResultType.ERROR, new ArrayList<>(){{add(message);}});
     }
 
-    public static <T> ApiResponse<T> Error(T data, List<String> messages){
+    public static <T> ApiResponse<T> Error(T data, List<Object> messages){
         return new ApiResponse<>(data, ResponseResultType.ERROR, messages);
     }
 
