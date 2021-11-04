@@ -6,7 +6,6 @@ import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -19,9 +18,7 @@ public class JsonApiErrorMessage extends DefaultErrorAttributes {
         final Map<String, Object> jsonApiErrorAttributes = new LinkedHashMap<>();
         jsonApiErrorAttributes.put("data", null);
         jsonApiErrorAttributes.put("resultType", "ERROR");
-        jsonApiErrorAttributes.put("messages", new HashSet<String>() {{
-            add((String) errorAttributes.get("message"));
-        }});
+        jsonApiErrorAttributes.put("message", errorAttributes.get("error"));
 
         return jsonApiErrorAttributes;
     }
