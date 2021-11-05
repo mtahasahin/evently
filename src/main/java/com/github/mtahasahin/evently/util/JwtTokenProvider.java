@@ -21,10 +21,10 @@ public class JwtTokenProvider {
         this.jwtConfig = jwtConfig;
     }
 
-    public String generateAccessToken(String username, Collection<String> authorities) {
+    public String generateAccessToken(long userId, Collection<String> authorities) {
         long now = System.currentTimeMillis();
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(String.valueOf(userId))
                 .claim("authorities", authorities)
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + jwtConfig.getAccessTokenExpiration() * 1000L))  // in milliseconds
@@ -32,10 +32,10 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String generateRefreshToken(String username) {
+    public String generateRefreshToken(long userId) {
         long now = System.currentTimeMillis();
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(String.valueOf(userId))
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + jwtConfig.getRefreshTokenExpiration() * 1000L))  // in milliseconds
                 .signWith(hmacShaKeyFor(jwtConfig.getSecret().getBytes()))

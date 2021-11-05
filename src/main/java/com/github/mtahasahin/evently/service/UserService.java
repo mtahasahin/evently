@@ -3,17 +3,15 @@ package com.github.mtahasahin.evently.service;
 
 import com.github.mtahasahin.evently.dto.UserDto;
 import com.github.mtahasahin.evently.entity.AppUser;
-import com.github.mtahasahin.evently.exception.EmailAlreadyTakenException;
+import com.github.mtahasahin.evently.exception.CustomValidationException;
 import com.github.mtahasahin.evently.exception.UserNotFoundException;
-import com.github.mtahasahin.evently.exception.UsernameAlreadyTakenException;
 import com.github.mtahasahin.evently.interfaces.Profile;
 import com.github.mtahasahin.evently.mapper.UserMapper;
 import com.github.mtahasahin.evently.repository.UserRepository;
+import com.github.mtahasahin.evently.wrapper.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,15 +19,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public UserDto getUser(String userName) {
-        AppUser user = userRepository.findByUsername(userName)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + userName));
+    public UserDto getUser(long id) {
+        AppUser user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + id));
         return userMapper.userToUserDto(user);
     }
 
-    public Profile getProfile(String requestingUser, String requestedUser) {
-        AppUser requestingUserEntity = userRepository.findByUsername(requestingUser)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + requestingUser));
+    public Profile getProfile(long requestingUserId, String requestedUser) {
+        AppUser requestingUserEntity = userRepository.findById(requestingUserId)
+                .orElse(null);
         AppUser requestedUserEntity = userRepository.findByUsername(requestedUser)
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + requestedUser));
 
@@ -37,8 +35,8 @@ public class UserService {
             return userMapper.userToPublicProfileDto(requestedUserEntity, false, false);
         }
 
-        var isFollowing = requestingUserEntity.isFollowing(requestedUserEntity);
-        var hasFollowingRequest = requestingUserEntity.hasFollowingRequest(requestedUserEntity);
+        var isFollowing = requestingUserEntity!=null && requestingUserEntity.isFollowing(requestedUserEntity);
+        var hasFollowingRequest = requestingUserEntity!=null && requestingUserEntity.hasFollowingRequest(requestedUserEntity);
 
         if (!requestedUserEntity.getUserProfile().isProfilePublic() && !isFollowing) {
             return userMapper.userToPrivateProfileDto(requestedUserEntity, false, hasFollowingRequest);
@@ -47,23 +45,23 @@ public class UserService {
         return userMapper.userToPublicProfileDto(requestedUserEntity, isFollowing, hasFollowingRequest);
     }
 
-    @Transactional
-    public UserDto updateUser(String username, UserDto userDto) {
-        AppUser userEntity = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
+    public UserDto updateUser(long id, UserDto userDto) {
+        AppUser userEntity = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + id));
 
         var x = userRepository.findByUsername(userDto.getUsername());
         var y = userRepository.findByEmail(userDto.getEmail());
 
         if (x.isPresent() && x.get() != userEntity) {
-            throw new UsernameAlreadyTakenException("This username has been already taken: " + username);
+            throw new CustomValidationException(new ApiResponse.ApiSubError("username","This username has already been taken"));
         }
 
         if (y.isPresent() && y.get() != userEntity) {
-            throw new EmailAlreadyTakenException("This email has been already taken: " + username);
+            throw new CustomValidationException(new ApiResponse.ApiSubError("email","This email has already been taken"));
         }
 
         userMapper.updateUserFromDto(userDto, userEntity);
+        userRepository.save(userEntity);
         return userMapper.userToUserDto(userEntity);
     }
 }

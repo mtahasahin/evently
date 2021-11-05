@@ -5,10 +5,12 @@ import com.github.mtahasahin.evently.dto.*;
 
 import com.github.mtahasahin.evently.entity.AppUser;
 import com.github.mtahasahin.evently.entity.Authority;
+import com.github.mtahasahin.evently.exception.CustomValidationException;
 import com.github.mtahasahin.evently.exception.EmailAlreadyTakenException;
 import com.github.mtahasahin.evently.repository.AuthorityRepository;
 import com.github.mtahasahin.evently.repository.UserRepository;
 import com.github.mtahasahin.evently.util.JwtTokenProvider;
+import com.github.mtahasahin.evently.wrapper.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotEmpty;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Optional;
@@ -43,7 +44,7 @@ public class AuthService {
         var claims = jwtTokenProvider.getClaimsFromJWT(refreshTokenRequest.getRefreshToken());
         String userName = claims.getSubject();
         var user = userRepository.findByUsername(userName).orElseThrow(() -> new UsernameNotFoundException("Username not found!"));
-        var accessToken = jwtTokenProvider.generateAccessToken(user.getUsername(),user.getAuthorities().stream().map(Authority::getAuthority).collect(Collectors.toList()));
+        var accessToken = jwtTokenProvider.generateAccessToken(user.getId(),user.getAuthorities().stream().map(Authority::getAuthority).collect(Collectors.toList()));
         return new AuthenticationResponse(accessToken, refreshTokenRequest.getRefreshToken());
     }
 
@@ -75,9 +76,10 @@ public class AuthService {
 
     private AuthenticationResponse authenticate(String email, String password)  {
         Authentication usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(email, password);
-        Authentication user = authenticationProvider.authenticate(usernamePasswordAuthenticationToken);
-        String accessToken = jwtTokenProvider.generateAccessToken(user.getName(), user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
-        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getName());
+        Authentication authentication = authenticationProvider.authenticate(usernamePasswordAuthenticationToken);
+        AppUser user = (AppUser) authentication.getPrincipal();
+        String accessToken = jwtTokenProvider.generateAccessToken(user.getId(), user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
+        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
         return new AuthenticationResponse(accessToken, refreshToken);
     }
 

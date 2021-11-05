@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,17 +18,16 @@ public class ProfileController {
 
     @GetMapping
     public UserDto getProfile(Authentication authentication) {
-        return userService.getUser(authentication.getName());
+        return userService.getUser(Long.parseLong(authentication.getName()));
     }
 
     @GetMapping(path = "/{username}")
     public Profile getProfiled(Authentication authentication, @PathVariable String username) {
-        return userService.getProfile(authentication.getName(), username);
+        return userService.getProfile(Long.parseLong(authentication.getName()), username);
     }
 
     @PutMapping
-    public ApiResponse<UserDto> updateProfile(Authentication authentication, @RequestBody UserDto userDto) {
-        var user = userService.updateUser(authentication.getName(), userDto);
-        return ApiResponse.Success(user, "Profile updated");
+    public ApiResponse<UserDto> updateProfile(Authentication authentication,@Valid @RequestBody UserDto userDto) {
+        return ApiResponse.Success(userService.updateUser(Long.parseLong(authentication.getName()), userDto), "Profile updated.");
     }
 }
