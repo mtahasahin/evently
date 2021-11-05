@@ -1,7 +1,8 @@
 package com.github.mtahasahin.evently.util;
 
 import com.github.mtahasahin.evently.config.JwtConfig;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

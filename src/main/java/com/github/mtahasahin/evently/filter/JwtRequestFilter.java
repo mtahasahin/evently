@@ -9,7 +9,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -52,7 +51,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             } catch (Exception ex) {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setContentType("application/json;charset=utf-8");
-                var res = ApiResponse.Error(null,ex.getMessage());
+                var res = ApiResponse.Error(null, ex.getMessage());
                 response.getWriter().write(objectMapper.writeValueAsString(res));
                 return;
             }

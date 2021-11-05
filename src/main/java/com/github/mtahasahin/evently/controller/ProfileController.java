@@ -27,7 +27,7 @@ public class ProfileController {
     }
 
     @PutMapping
-    public ApiResponse<UserDto> updateProfile(Authentication authentication,@Valid @RequestBody UserDto userDto) {
+    public ApiResponse<UserDto> updateProfile(Authentication authentication, @Valid @RequestBody UserDto userDto) {
         return ApiResponse.Success(userService.updateUser(Long.parseLong(authentication.getName()), userDto), "Profile updated.");
     }
 }

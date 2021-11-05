@@ -1,11 +1,10 @@
 package com.github.mtahasahin.evently.controlleradvice;
 
 import com.github.mtahasahin.evently.exception.CustomValidationException;
+import com.github.mtahasahin.evently.exception.EmailAlreadyTakenException;
 import com.github.mtahasahin.evently.exception.UserNotFoundException;
 import com.github.mtahasahin.evently.exception.UsernameAlreadyTakenException;
 import com.github.mtahasahin.evently.wrapper.ApiResponse;
-import com.github.mtahasahin.evently.exception.EmailAlreadyTakenException;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolationException;
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
 
@@ -41,7 +39,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         return new ResponseEntity<>(ApiResponse.Error(null, "Some fields are invalid.",
                 ex.getBindingResult().getFieldErrors().stream()
-                        .map(e -> new ApiResponse.ApiSubError(e.getField(),e.getDefaultMessage()))
+                        .map(e -> new ApiResponse.ApiSubError(e.getField(), e.getDefaultMessage()))
                         .collect(Collectors.toList())),
                 HttpStatus.BAD_REQUEST);
     }
@@ -50,7 +48,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleValidationExceptions(BindException ex) {
         return new ResponseEntity<>(ApiResponse.Error(null, "Some fields are invalid.",
                 ex.getBindingResult().getFieldErrors().stream()
-                        .map(e -> new ApiResponse.ApiSubError(e.getField(),e.getDefaultMessage()))
+                        .map(e -> new ApiResponse.ApiSubError(e.getField(), e.getDefaultMessage()))
                         .collect(Collectors.toList())),
                 HttpStatus.BAD_REQUEST);
     }
@@ -59,7 +57,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleValidationExceptions(ConstraintViolationException ex) {
         return new ResponseEntity<>(ApiResponse.Error(null, "Some fields are invalid.",
                 ex.getConstraintViolations().stream()
-                        .map(e -> new ApiResponse.ApiSubError(e.getPropertyPath().toString(),e.getMessage()))
+                        .map(e -> new ApiResponse.ApiSubError(e.getPropertyPath().toString(), e.getMessage()))
                         .collect(Collectors.toList())),
                 HttpStatus.BAD_REQUEST);
     }

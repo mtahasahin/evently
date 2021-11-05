@@ -30,7 +30,7 @@ public class AppUser implements UserDetails, CredentialsContainer {
     @Column(name = "PASSWORD")
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "USER_AUTHORITIES",
             joinColumns = @JoinColumn(name = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "AUTHORITY_ID"))
@@ -42,18 +42,18 @@ public class AppUser implements UserDetails, CredentialsContainer {
     @OneToMany(mappedBy = "organizer", orphanRemoval = true)
     private Set<Event> organizedEvents = new HashSet<>();
 
-    public boolean isOrganizing(Event event){
+    public boolean isOrganizing(Event event) {
         return organizedEvents.contains(event);
     }
 
     @OneToMany(mappedBy = "applicant", orphanRemoval = true)
     private Set<EventApplication> eventApplications = new HashSet<>();
 
-    public boolean isJoiningEvent(Event event){
+    public boolean isJoiningEvent(Event event) {
         return eventApplications.stream().anyMatch(e -> e.getEvent() == event && e.isConfirmed());
     }
 
-    public boolean isWaitingForApprovalForEvent(Event event){
+    public boolean isWaitingForApprovalForEvent(Event event) {
         return eventApplications.stream().anyMatch(e -> e.getEvent() == event && !e.isConfirmed());
     }
 
@@ -72,17 +72,17 @@ public class AppUser implements UserDetails, CredentialsContainer {
     private List<FollowerFollowing> followings = new ArrayList<>();
 
     public void addFollower(AppUser user, boolean confirmed) {
-        FollowerFollowing followerFollowing = new FollowerFollowing(user,this, confirmed);
+        FollowerFollowing followerFollowing = new FollowerFollowing(user, this, confirmed);
         followers.add(followerFollowing);
         user.followings.add(followerFollowing);
     }
 
-    public void removeFollower(AppUser user){
-        for(Iterator<FollowerFollowing> iterator = followers.iterator(); iterator.hasNext(); ){
+    public void removeFollower(AppUser user) {
+        for (Iterator<FollowerFollowing> iterator = followers.iterator(); iterator.hasNext(); ) {
             FollowerFollowing followerFollowing = iterator.next();
 
-            if(followerFollowing.getFollowing().equals(this) &&
-            followerFollowing.getFollower().equals(user)){
+            if (followerFollowing.getFollowing().equals(this) &&
+                    followerFollowing.getFollower().equals(user)) {
                 iterator.remove();
                 followerFollowing.getFollower().getFollowings().remove(followerFollowing);
                 followerFollowing.setFollower(null);
@@ -91,11 +91,11 @@ public class AppUser implements UserDetails, CredentialsContainer {
         }
     }
 
-    public boolean isFollowing(AppUser user){
+    public boolean isFollowing(AppUser user) {
         return followings.stream().anyMatch(e -> e.getFollowing() == user && e.isConfirmed());
     }
 
-    public boolean hasFollowingRequest(AppUser user){
+    public boolean hasFollowingRequest(AppUser user) {
         return followings.stream().anyMatch(e -> e.getFollowing() == user && !e.isConfirmed());
     }
 

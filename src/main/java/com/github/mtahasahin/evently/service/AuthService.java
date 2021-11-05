@@ -35,7 +35,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;
 
-    public AuthenticationResponse login(final LoginRequest loginRequest){
+    public AuthenticationResponse login(final LoginRequest loginRequest) {
         return authenticate(loginRequest.getEmail(), loginRequest.getPassword());
     }
 
@@ -43,14 +43,14 @@ public class AuthService {
         var claims = jwtTokenProvider.getClaimsFromJWT(refreshTokenRequest.getRefreshToken());
         String userName = claims.getSubject();
         var user = userRepository.findByUsername(userName).orElseThrow(() -> new UsernameNotFoundException("Username not found!"));
-        var accessToken = jwtTokenProvider.generateAccessToken(user.getId(),user.getAuthorities().stream().map(Authority::getAuthority).collect(Collectors.toList()));
+        var accessToken = jwtTokenProvider.generateAccessToken(user.getId(), user.getAuthorities().stream().map(Authority::getAuthority).collect(Collectors.toList()));
         return new AuthenticationResponse(accessToken, refreshTokenRequest.getRefreshToken());
     }
 
     @Transactional
     public AuthenticationResponse registerUser(RegisterRequest registerRequest) {
         Optional<AppUser> user = userRepository.findByEmail(registerRequest.getEmail());
-        if (user.isPresent()){
+        if (user.isPresent()) {
             throw new EmailAlreadyTakenException("This email has already been taken");
         }
 
@@ -64,6 +64,7 @@ public class AuthService {
         userProfileEntity.setProfilePublic(true);
         userProfileEntity.setRegistrationDate(LocalDateTime.now());
         userProfileEntity.setUser(userEntity);
+        userProfileEntity.setTimezone("Europe/Istanbul");
         userEntity.setUserProfile(userProfileEntity);
 
         var userAuthority = authorityRepository.getByAuthority("ROLE_USER");
@@ -101,15 +102,15 @@ public class AuthService {
         return new AuthenticationResponse(accessToken, refreshToken);
     }
 
-    private String createUniqueUsername(@NotEmpty String name){
+    private String createUniqueUsername(@NotEmpty String name) {
         String username;
-        do{
-            username = name.trim().toLowerCase(Locale.ROOT).replaceAll(" ","");
+        do {
+            username = name.trim().toLowerCase(Locale.ROOT).replaceAll(" ", "");
             int count = userRepository.countAppUsersByUsernameContaining(username);
-            if(count>0)
+            if (count > 0)
                 username += "-" + count;
         }
-        while(userRepository.findByUsername(username).isPresent());
+        while (userRepository.findByUsername(username).isPresent());
         return username;
     }
 }

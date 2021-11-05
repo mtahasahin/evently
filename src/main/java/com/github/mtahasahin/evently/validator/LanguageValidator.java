@@ -1,7 +1,5 @@
 package com.github.mtahasahin.evently.validator;
 
-import lombok.NoArgsConstructor;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.Locale;
@@ -11,7 +9,7 @@ public class LanguageValidator implements ConstraintValidator<Language, String> 
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if(value == null)
+        if (value == null)
             return false;
 
         Locale[] locales = Locale.getAvailableLocales();

@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.*;
+import java.util.List;
 
 @AllArgsConstructor
 @Getter
@@ -18,29 +17,29 @@ public class ApiResponse<T> implements Serializable {
     private String message;
     private List<ApiSubError> errors;
 
-    public static <T> ApiResponse<T> Success(T data){
+    public static <T> ApiResponse<T> Success(T data) {
         return new ApiResponse<>(data, ResponseResultType.SUCCESS, null, null);
     }
 
-    public static <T> ApiResponse<T> Success(T data, String message){
+    public static <T> ApiResponse<T> Success(T data, String message) {
         return new ApiResponse<>(data, ResponseResultType.SUCCESS, message, null);
     }
 
-    public static <T> ApiResponse<T> Error(T data){
+    public static <T> ApiResponse<T> Error(T data) {
         return new ApiResponse<>(data, ResponseResultType.ERROR, "An error occurred.", null);
     }
 
-    public static <T> ApiResponse<T> Error(T data, String message){
+    public static <T> ApiResponse<T> Error(T data, String message) {
         return new ApiResponse<>(data, ResponseResultType.ERROR, message, null);
     }
 
-    public static <T> ApiResponse<T> Error(T data, String messages, List<ApiSubError> errors){
+    public static <T> ApiResponse<T> Error(T data, String messages, List<ApiSubError> errors) {
         return new ApiResponse<>(data, ResponseResultType.ERROR, messages, errors);
     }
 
     @Data
     @AllArgsConstructor
-    public static class ApiSubError{
+    public static class ApiSubError {
         private String field;
         private String message;
     }

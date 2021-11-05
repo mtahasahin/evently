@@ -31,12 +31,12 @@ public class UserService {
         AppUser requestedUserEntity = userRepository.findByUsername(requestedUser)
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + requestedUser));
 
-        if(requestedUserEntity == requestingUserEntity){
+        if (requestedUserEntity == requestingUserEntity) {
             return userMapper.userToPublicProfileDto(requestedUserEntity, false, false);
         }
 
-        var isFollowing = requestingUserEntity!=null && requestingUserEntity.isFollowing(requestedUserEntity);
-        var hasFollowingRequest = requestingUserEntity!=null && requestingUserEntity.hasFollowingRequest(requestedUserEntity);
+        var isFollowing = requestingUserEntity != null && requestingUserEntity.isFollowing(requestedUserEntity);
+        var hasFollowingRequest = requestingUserEntity != null && requestingUserEntity.hasFollowingRequest(requestedUserEntity);
 
         if (!requestedUserEntity.getUserProfile().isProfilePublic() && !isFollowing) {
             return userMapper.userToPrivateProfileDto(requestedUserEntity, false, hasFollowingRequest);
@@ -53,11 +53,11 @@ public class UserService {
         var y = userRepository.findByEmail(userDto.getEmail());
 
         if (x.isPresent() && x.get() != userEntity) {
-            throw new CustomValidationException(new ApiResponse.ApiSubError("username","This username has already been taken"));
+            throw new CustomValidationException(new ApiResponse.ApiSubError("username", "This username has already been taken"));
         }
 
         if (y.isPresent() && y.get() != userEntity) {
-            throw new CustomValidationException(new ApiResponse.ApiSubError("email","This email has already been taken"));
+            throw new CustomValidationException(new ApiResponse.ApiSubError("email", "This email has already been taken"));
         }
 
         userMapper.updateUserFromDto(userDto, userEntity);

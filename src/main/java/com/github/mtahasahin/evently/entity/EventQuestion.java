@@ -29,7 +29,7 @@ public class EventQuestion {
 
     private EventQuestionType type;
 
-    @Column(name="QUESTION_ORDER")
+    @Column(name = "QUESTION_ORDER")
     private int order;
 
     private String title;

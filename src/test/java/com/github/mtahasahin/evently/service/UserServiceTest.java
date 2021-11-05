@@ -11,13 +11,17 @@ import com.github.mtahasahin.evently.mapper.UserMapper;
 import com.github.mtahasahin.evently.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -86,7 +90,7 @@ class UserServiceTest {
 
         Mockito.when(userMapper.userToPrivateProfileDto(requestedUser, false, false)).thenReturn(profileDto);
 
-        var result = userService.getProfile(1,"user-2");
+        var result = userService.getProfile(1, "user-2");
 
         assertEquals(profileDto, result);
     }
@@ -128,7 +132,7 @@ class UserServiceTest {
 
         Mockito.when(userMapper.userToPublicProfileDto(requestedUser, true, false)).thenReturn(profileDto);
 
-        var result = userService.getProfile(1,"user-2");
+        var result = userService.getProfile(1, "user-2");
 
         assertEquals(profileDto, result);
     }
@@ -169,7 +173,7 @@ class UserServiceTest {
 
         Mockito.when(userMapper.userToPublicProfileDto(requestedUser, false, false)).thenReturn(profileDto);
 
-        var result = userService.getProfile(1,"user-2");
+        var result = userService.getProfile(1, "user-2");
 
         assertEquals(profileDto, result);
     }
