@@ -1,10 +1,9 @@
 package com.github.mtahasahin.evently.service;
 
-import com.github.mtahasahin.evently.entity.UserProfile;
 import com.github.mtahasahin.evently.dto.*;
-
 import com.github.mtahasahin.evently.entity.AppUser;
 import com.github.mtahasahin.evently.entity.Authority;
+import com.github.mtahasahin.evently.entity.UserProfile;
 import com.github.mtahasahin.evently.exception.CustomValidationException;
 import com.github.mtahasahin.evently.exception.EmailAlreadyTakenException;
 import com.github.mtahasahin.evently.repository.AuthorityRepository;
@@ -74,7 +73,26 @@ public class AuthService {
         return authenticate(registerRequest.getEmail(), registerRequest.getPassword());
     }
 
-    private AuthenticationResponse authenticate(String email, String password)  {
+    public void changePassword(long userId, ChangePasswordRequest changePasswordRequest) {
+        var user = userRepository.findById(userId).orElseThrow();
+        var passwordMatches = passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword());
+        if (!passwordMatches) {
+            throw new CustomValidationException(new ApiResponse.ApiSubError("currentPassword", "Current password is invalid"));
+        }
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+        userRepository.save(user);
+    }
+
+    public void closeAccount(long userId, String password) {
+        var user = userRepository.findById(userId).orElseThrow();
+        var passwordMatches = passwordEncoder.matches(password, user.getPassword());
+        if (!passwordMatches) {
+            throw new CustomValidationException(new ApiResponse.ApiSubError("password", "Password is invalid"));
+        }
+        userRepository.delete(user);
+    }
+
+    private AuthenticationResponse authenticate(String email, String password) {
         Authentication usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(email, password);
         Authentication authentication = authenticationProvider.authenticate(usernamePasswordAuthenticationToken);
         AppUser user = (AppUser) authentication.getPrincipal();

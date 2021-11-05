@@ -2,11 +2,10 @@ package com.github.mtahasahin.evently.controller;
 
 import com.github.mtahasahin.evently.dto.*;
 import com.github.mtahasahin.evently.service.AuthService;
+import com.github.mtahasahin.evently.wrapper.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -28,8 +27,20 @@ public class AuthController {
     }
 
     @PostMapping(path = "/register")
-    public AuthenticationResponse register(@Valid @RequestBody final RegisterRequest registerRequest){
+    public AuthenticationResponse register(@Valid @RequestBody final RegisterRequest registerRequest) {
         return authService.registerUser(registerRequest);
+    }
+
+    @PutMapping(path = "/change-password")
+    public ApiResponse<Object> changePassword(Authentication authentication, @Valid @RequestBody final ChangePasswordRequest changePasswordRequest) {
+        authService.changePassword(Long.parseLong(authentication.getName()), changePasswordRequest);
+        return ApiResponse.Success(null, "Password is changed successfully.");
+    }
+
+    @DeleteMapping(path = "/close-account")
+    public ApiResponse<Object> closeAccount(Authentication authentication, final String password) {
+        authService.closeAccount(Long.parseLong(authentication.getName()), password);
+        return ApiResponse.Success(null);
     }
 
 }
