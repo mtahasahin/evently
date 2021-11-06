@@ -14,7 +14,7 @@ public class PublicProfileDto implements Profile {
     private String name;
     private LocalDate dateOfBirth;
     private LocalDateTime registrationDate;
-    private Boolean isProfilePublic;
+    private boolean profilePublic;
     private String about;
     private String websiteUrl;
     private String twitterUsername;
@@ -23,6 +23,7 @@ public class PublicProfileDto implements Profile {
     private String githubUsername;
     private int followersCount;
     private int followingsCount;
-    private Boolean isFollowing;
-    private Boolean hasFollowingRequest;
+    private boolean following;
+    private boolean hasFollowingRequest;
+    private boolean canEdit;
 }

@@ -4,6 +4,7 @@ import com.github.mtahasahin.evently.dto.*;
 import com.github.mtahasahin.evently.service.AuthService;
 import com.github.mtahasahin.evently.wrapper.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,12 +32,14 @@ public class AuthController {
         return authService.registerUser(registerRequest);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping(path = "/change-password")
     public ApiResponse<Object> changePassword(Authentication authentication, @Valid @RequestBody final ChangePasswordRequest changePasswordRequest) {
         authService.changePassword(Long.parseLong(authentication.getName()), changePasswordRequest);
         return ApiResponse.Success(null, "Password is changed successfully.");
     }
 
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping(path = "/close-account")
     public ApiResponse<Object> closeAccount(Authentication authentication, final String password) {
         authService.closeAccount(Long.parseLong(authentication.getName()), password);

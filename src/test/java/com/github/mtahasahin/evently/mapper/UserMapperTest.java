@@ -5,15 +5,13 @@ import com.github.mtahasahin.evently.dto.UserDto;
 import com.github.mtahasahin.evently.entity.AppUser;
 import com.github.mtahasahin.evently.entity.UserProfile;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAmount;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RequiredArgsConstructor
 class UserMapperTest {
@@ -30,7 +28,7 @@ class UserMapperTest {
                 .username("user")
                 .email("user@example.com")
                 .userProfile(UserProfile.builder()
-                        .isProfilePublic(true)
+                        .profilePublic(true)
                         .name("name lastname")
                         .about("about")
                         .dateOfBirth(LocalDate.now())
@@ -49,7 +47,7 @@ class UserMapperTest {
 
         assertEquals(user.getUsername(), userDto.getUsername());
         assertEquals(user.getEmail(), userDto.getEmail());
-        assertEquals(profile.isProfilePublic(), profileDto.getIsProfilePublic());
+        assertEquals(profile.isProfilePublic(), profileDto.isProfilePublic());
         assertEquals(profile.getAbout(), profileDto.getAbout());
         assertEquals(profile.getDateOfBirth(), profileDto.getDateOfBirth());
         assertEquals(profile.getName(), profileDto.getName());
@@ -67,8 +65,7 @@ class UserMapperTest {
                 .username("username-new")
                 .email("user-new@example.com")
                 .profile(ProfileDto.builder()
-                        .isProfilePublic(false)
-                        .registrationDate(LocalDateTime.now().plusDays(15))
+                        .profilePublic(false)
                         .dateOfBirth(LocalDate.now())
                         .name("name surname-new")
                         .about("about-new")
@@ -87,7 +84,7 @@ class UserMapperTest {
                 .email("user@example.com")
                 .userProfile(UserProfile.builder()
                         .id(2L)
-                        .isProfilePublic(true)
+                        .profilePublic(true)
                         .name("name lastname")
                         .about("about")
                         .dateOfBirth(LocalDate.now())
@@ -100,7 +97,7 @@ class UserMapperTest {
                         .build())
                 .build();
 
-        userMapper.updateUserFromDto(userDto,user);
+        userMapper.updateUserFromDto(userDto, user);
         UserProfile profile = user.getUserProfile();
         ProfileDto profileDto = userDto.getProfile();
 
@@ -111,9 +108,8 @@ class UserMapperTest {
         assertEquals(2L, profile.getId());
         assertEquals(profileDto.getAbout(), profile.getAbout());
         assertEquals(profileDto.getName(), profile.getName());
-        assertEquals(profileDto.getIsProfilePublic(), profile.isProfilePublic());
+        assertEquals(profileDto.isProfilePublic(), profile.isProfilePublic());
         assertEquals(profileDto.getDateOfBirth(), profile.getDateOfBirth());
-        assertEquals(registrationDate, profile.getRegistrationDate());
         assertEquals(profileDto.getInstagramUsername(), profile.getInstagramUsername());
         assertEquals(profileDto.getFacebookUsername(), profile.getFacebookUsername());
         assertEquals(profileDto.getGithubUsername(), profile.getGithubUsername());

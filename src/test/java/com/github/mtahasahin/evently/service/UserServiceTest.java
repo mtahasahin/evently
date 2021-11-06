@@ -112,13 +112,14 @@ class UserServiceTest {
                 .username("user-2")
                 .userProfile(UserProfile.builder()
                         .name("name2 surname2")
-                        .profilePublic(false)
+                        .profilePublic(true)
                         .build())
                 .followings(new ArrayList<>())
                 .followers(new ArrayList<>())
                 .build();
 
-        requestedUser.addFollower(requestingUser, true);
+        requestedUser.addFollower(requestingUser);
+        requestedUser.getUserProfile().setProfilePublic(false);
 
         PublicProfileDto profileDto = PublicProfileDto.builder()
                 .username("user-2")
@@ -130,7 +131,7 @@ class UserServiceTest {
         Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(requestingUser));
         Mockito.when(userRepository.findByUsername("user-2")).thenReturn(Optional.of(requestedUser));
 
-        Mockito.when(userMapper.userToPublicProfileDto(requestedUser, true, false)).thenReturn(profileDto);
+        Mockito.when(userMapper.userToPublicProfileDto(requestedUser, true, false,false)).thenReturn(profileDto);
 
         var result = userService.getProfile(1, "user-2");
 
@@ -171,7 +172,7 @@ class UserServiceTest {
         Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(requestingUser));
         Mockito.when(userRepository.findByUsername("user-2")).thenReturn(Optional.of(requestedUser));
 
-        Mockito.when(userMapper.userToPublicProfileDto(requestedUser, false, false)).thenReturn(profileDto);
+        Mockito.when(userMapper.userToPublicProfileDto(requestedUser, false, false,false)).thenReturn(profileDto);
 
         var result = userService.getProfile(1, "user-2");
 

@@ -71,8 +71,8 @@ public class AppUser implements UserDetails, CredentialsContainer {
     )
     private List<FollowerFollowing> followings = new ArrayList<>();
 
-    public void addFollower(AppUser user, boolean confirmed) {
-        FollowerFollowing followerFollowing = new FollowerFollowing(user, this, confirmed);
+    public void addFollower(AppUser user) {
+        FollowerFollowing followerFollowing = new FollowerFollowing(user, this, this.userProfile.isProfilePublic());
         followers.add(followerFollowing);
         user.followings.add(followerFollowing);
     }

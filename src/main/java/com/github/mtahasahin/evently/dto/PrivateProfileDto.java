@@ -12,10 +12,11 @@ public class PrivateProfileDto implements Profile {
     private String username;
     private String name;
     private LocalDateTime registrationDate;
-    private Boolean isProfilePublic;
+    private boolean profilePublic;
     private String about;
     private int followersCount;
     private int followingsCount;
-    private Boolean isFollowing;
-    private Boolean hasFollowingRequest;
+    private boolean following;
+    private boolean hasFollowingRequest;
+    private boolean canEdit;
 }

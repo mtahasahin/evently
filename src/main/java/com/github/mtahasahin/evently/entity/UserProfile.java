@@ -24,12 +24,12 @@ public class UserProfile {
     private LocalDate dateOfBirth;
     private LocalDateTime registrationDate;
     private boolean profilePublic;
-    @Length(max = 40)
+    @Length(max = 50)
     private String location;
     @TimeZone
-    @Length(max = 40)
+    @Length(max = 50)
     private String timezone;
-    @Length(max = 40)
+    @Length(max = 50)
     private String language;
     private String about;
     private String websiteUrl;

@@ -5,16 +5,15 @@ import com.github.mtahasahin.evently.dto.PublicProfileDto;
 import com.github.mtahasahin.evently.dto.UserDto;
 import com.github.mtahasahin.evently.entity.AppUser;
 import org.mapstruct.*;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(uses = {ProfileMapper.class})
 public interface UserMapper {
 
-    UserMapper INSTANCE = Mappers.getMapper( UserMapper.class );
-
     @Mapping(source = "userProfile", target = "profile")
     UserDto userToUserDto(AppUser user);
 
+    @Mapping(target = "organizedEvents", ignore = true)
+    @Mapping(target = "eventApplications", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "authorities", ignore = true)
@@ -26,15 +25,16 @@ public interface UserMapper {
 
     @Mapping(source = "user.userProfile.name", target = "name")
     @Mapping(source = "user.userProfile.about", target = "about")
-    @Mapping(source = "user.userProfile.profilePublic", target = "isProfilePublic")
+    @Mapping(source = "user.userProfile.profilePublic", target = "profilePublic")
     @Mapping(source = "user.userProfile.registrationDate", target = "registrationDate")
     @Mapping(target = "followersCount", expression = "java(user.getFollowers()!= null ? (int) user.getFollowers().stream().filter(e -> e.isConfirmed()).count():0)")
     @Mapping(target = "followingsCount", expression = "java(user.getFollowings()!= null ? (int) user.getFollowings().stream().filter(e -> e.isConfirmed()).count():0)")
-    PrivateProfileDto userToPrivateProfileDto(AppUser user, boolean isFollowing, boolean hasFollowingRequest);
+    @Mapping(target = "canEdit", constant = "false")
+    PrivateProfileDto userToPrivateProfileDto(AppUser user, boolean following, boolean hasFollowingRequest);
 
     @Mapping(source = "user.userProfile.name", target = "name")
     @Mapping(source = "user.userProfile.about", target = "about")
-    @Mapping(source = "user.userProfile.profilePublic", target = "isProfilePublic")
+    @Mapping(source = "user.userProfile.profilePublic", target = "profilePublic")
     @Mapping(source = "user.userProfile.dateOfBirth", target = "dateOfBirth")
     @Mapping(source = "user.userProfile.registrationDate", target = "registrationDate")
     @Mapping(source = "user.userProfile.facebookUsername", target = "facebookUsername")
@@ -44,5 +44,5 @@ public interface UserMapper {
     @Mapping(source = "user.userProfile.websiteUrl", target = "websiteUrl")
     @Mapping(target = "followersCount", expression = "java(user.getFollowers()!= null ? (int) user.getFollowers().stream().filter(e -> e.isConfirmed()).count():0)")
     @Mapping(target = "followingsCount", expression = "java(user.getFollowings()!= null ? (int) user.getFollowings().stream().filter(e -> e.isConfirmed()).count():0)")
-    PublicProfileDto userToPublicProfileDto(AppUser user, boolean isFollowing, boolean hasFollowingRequest);
+    PublicProfileDto userToPublicProfileDto(AppUser user, boolean following, boolean hasFollowingRequest, boolean canEdit);
 }

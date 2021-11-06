@@ -12,6 +12,8 @@ import com.github.mtahasahin.evently.wrapper.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +34,7 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + requestedUser));
 
         if (requestedUserEntity == requestingUserEntity) {
-            return userMapper.userToPublicProfileDto(requestedUserEntity, false, false);
+            return userMapper.userToPublicProfileDto(requestedUserEntity, false, false, true);
         }
 
         var isFollowing = requestingUserEntity != null && requestingUserEntity.isFollowing(requestedUserEntity);
@@ -42,7 +44,7 @@ public class UserService {
             return userMapper.userToPrivateProfileDto(requestedUserEntity, false, hasFollowingRequest);
         }
 
-        return userMapper.userToPublicProfileDto(requestedUserEntity, isFollowing, hasFollowingRequest);
+        return userMapper.userToPublicProfileDto(requestedUserEntity, isFollowing, hasFollowingRequest,false);
     }
 
     public UserDto updateUser(long id, UserDto userDto) {
@@ -63,5 +65,25 @@ public class UserService {
         userMapper.updateUserFromDto(userDto, userEntity);
         userRepository.save(userEntity);
         return userMapper.userToUserDto(userEntity);
+    }
+
+    public void follow(long requestingUserId, String username){
+        AppUser userEntity = userRepository.findById(requestingUserId)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + requestingUserId));
+        AppUser userToFollow = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
+
+        userToFollow.addFollower(userEntity);
+        userRepository.saveAll(List.of(userEntity, userToFollow));
+    }
+
+    public void unfollow(long requestingUserId, String username){
+        AppUser userEntity = userRepository.findById(requestingUserId)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + requestingUserId));
+        AppUser userToFollow = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
+
+        userToFollow.removeFollower(userEntity);
+        userRepository.save(userToFollow);
     }
 }

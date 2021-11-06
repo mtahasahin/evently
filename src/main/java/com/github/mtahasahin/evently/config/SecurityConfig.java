@@ -45,10 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .logout().disable()
                 .httpBasic().disable()
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/api/auth/**").permitAll()
-                .anyRequest().hasRole("USER");
+                .csrf().disable();
     }
 
     @Bean
