@@ -26,7 +26,6 @@ public class UserProfile {
     private boolean profilePublic;
     @Length(max = 50)
     private String location;
-    @TimeZone
     @Length(max = 50)
     private String timezone;
     @Length(max = 50)

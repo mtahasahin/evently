@@ -10,8 +10,8 @@ public class TimeZoneValidator implements ConstraintValidator<TimeZone, String> 
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null) {
-            return false;
+        if (value == null || value.equals("")) {
+            return true;
         }
 
         try {

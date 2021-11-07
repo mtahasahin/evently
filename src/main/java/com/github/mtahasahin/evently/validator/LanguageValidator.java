@@ -9,12 +9,13 @@ public class LanguageValidator implements ConstraintValidator<Language, String> 
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null)
-            return false;
+        if (value == null || value.equals("")) {
+            return true;
+        }
 
         Locale[] locales = Locale.getAvailableLocales();
         for (Locale locale : locales) {
-            if (value.equals(locale.toString())) {
+            if (value.equals(locale.toLanguageTag())) {
                 return true;
             }
         }

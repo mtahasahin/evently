@@ -18,7 +18,6 @@ public class ProfileDto {
     @NotNull
     private LocalDate dateOfBirth;
     private boolean profilePublic;
-    @NotBlank
     @TimeZone
     private String timezone;
     private String location;
