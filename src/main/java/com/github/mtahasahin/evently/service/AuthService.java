@@ -10,6 +10,7 @@ import com.github.mtahasahin.evently.repository.AuthorityRepository;
 import com.github.mtahasahin.evently.repository.UserRepository;
 import com.github.mtahasahin.evently.util.JwtTokenProvider;
 import com.github.mtahasahin.evently.wrapper.ApiResponse;
+import com.ibm.icu.util.ULocale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -64,7 +65,10 @@ public class AuthService {
         userProfileEntity.setProfilePublic(true);
         userProfileEntity.setRegistrationDate(LocalDateTime.now());
         userProfileEntity.setUser(userEntity);
-        userProfileEntity.setTimezone("Europe/Istanbul");
+
+        var language = new ULocale(registerRequest.getLanguage()).getLanguage();
+        userProfileEntity.setLanguage(language.isEmpty() ? "en" : language);
+
         userEntity.setUserProfile(userProfileEntity);
 
         var userAuthority = authorityRepository.getByAuthority("ROLE_USER");

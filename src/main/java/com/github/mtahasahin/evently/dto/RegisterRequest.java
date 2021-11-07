@@ -1,5 +1,6 @@
 package com.github.mtahasahin.evently.dto;
 
+import com.github.mtahasahin.evently.validator.Language;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,4 +22,5 @@ public class RegisterRequest {
     @NotBlank(message = "Name field can not be empty")
     @Length(min = 2, message = "Name should be at least 2 characters long")
     private String name;
+    private String language;
 }
