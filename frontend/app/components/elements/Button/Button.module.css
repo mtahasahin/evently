@@ -1,0 +1,66 @@
+.base {
+    @apply
+    bg-blue-700
+    text-white
+    rounded
+    transition
+    whitespace-nowrap
+    disabled:opacity-50
+}
+
+.primary {
+    @apply
+    bg-blue-400
+
+    hover:bg-blue-600
+}
+
+.secondary {
+    @apply
+    bg-yellow-400
+
+    hover:bg-yellow-600
+}
+
+.success {
+    @apply
+    bg-green-500
+
+    hover:bg-green-600
+}
+
+.dark {
+    @apply
+    bg-gray-800
+
+    hover:bg-black
+}
+
+.danger {
+    @apply
+    bg-red-500
+
+    hover:bg-red-700
+}
+
+.white {
+    @apply
+    bg-white
+    text-black
+    border
+}
+
+.medium {
+    @apply
+    px-3 py-1.5
+}
+
+.large {
+    @apply
+    px-5 py-2
+}
+
+.x-large {
+    @apply
+    px-8 py-3
+}

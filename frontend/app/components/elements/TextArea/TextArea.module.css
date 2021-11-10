@@ -1,0 +1,3 @@
+.base {
+    composes: input-rounded from '../../../styles/input.css';
+}

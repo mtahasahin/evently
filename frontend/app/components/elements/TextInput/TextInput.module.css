@@ -1,0 +1,7 @@
+.base {
+    composes: input-rounded from '../../../styles/input.css';
+}
+
+.error {
+    composes: input-error-rounded from '../../../styles/input.css';
+}

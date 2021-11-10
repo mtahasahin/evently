@@ -1,0 +1,29 @@
+.base-input {
+    @apply
+    placeholder-gray-400
+    border
+    bg-gray-50
+    p-3 w-full
+    focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none
+}
+
+.base-input-error {
+    @apply
+    placeholder-gray-400
+    border
+    bg-gray-50
+    p-3 w-full
+    focus:bg-white ring-1 ring-red-500 outline-none
+}
+
+.input-rounded {
+    composes: base-input;
+    @apply
+    rounded
+}
+
+.input-error-rounded {
+    composes: base-input-error;
+    @apply
+    rounded
+}

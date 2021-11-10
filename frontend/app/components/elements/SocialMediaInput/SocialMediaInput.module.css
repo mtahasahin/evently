@@ -1,0 +1,5 @@
+.base {
+    composes: base-input from '../../../styles/input.css';
+    @apply
+    rounded-r
+}
