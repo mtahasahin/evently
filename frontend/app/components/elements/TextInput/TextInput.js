@@ -4,7 +4,7 @@ import styles from './TextInput.module.css';
 
 const TextInput = ({name, label, register, error, ...props}) => {
     if (label) {
-        return <div className="relative space-y-3 w-full">
+        return <div className="relative space-y-2 w-full">
             <label className="uppercase text-sm text-gray-400">{label}</label>
             <input type="text"
                    {...register(name)}

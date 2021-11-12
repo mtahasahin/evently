@@ -6,7 +6,7 @@ import {Controller} from "react-hook-form";
 const Select = ({name, label, control, defaultValue, ...props}) => {
     if (label) {
         return <Controller control={control} defaultValue={defaultValue} render={({field}) => (
-            <div className="relative space-y-3 w-full">
+            <div className="relative space-y-2 w-full">
                 <label className="uppercase text-sm text-gray-400">{label}</label>
                 <SelectSearch {...props} onChange={field.onChange} onBlur={field.onBlur}
                               value={field.value || defaultValue}/>

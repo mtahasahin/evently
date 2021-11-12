@@ -5,7 +5,7 @@ import styles from './SocialMediaInput.module.css'
 const SocialMediaInput = ({name, label, precedingUrl, register, ...props}) => {
     if (label) {
         return (
-            <div className="relative space-y-3 w-full">
+            <div className="relative space-y-2 w-full">
                 <label className="uppercase text-sm text-gray-400">{label}</label>
                 <div className="flex flex-row">
                     <div

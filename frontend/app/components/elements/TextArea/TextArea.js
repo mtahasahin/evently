@@ -4,7 +4,7 @@ import styles from './TextArea.module.css';
 
 const TextArea = ({name, label, register, ...props}) => {
     if (label) {
-        return <div className="relative space-y-3 w-full">
+        return <div className="relative space-y-2 w-full">
             <label className="uppercase text-sm text-gray-400">{label}</label>
             <textarea
                 {...register(name)}
