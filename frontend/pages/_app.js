@@ -1,4 +1,7 @@
 import 'tailwindcss/tailwind.css'
+import '../app/styles/global.css'
+import '../app/components/elements/Editor/Editor.css'
+import 'cropperjs/dist/cropper.css'
 import '../app/components/elements/DatePicker/DatePicker.css'
 import '../app/components/elements/Select/Select.css'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';

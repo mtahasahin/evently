@@ -6,6 +6,9 @@
     "start": "next start"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^31.0.0",
+    "@ckeditor/ckeditor5-react": "^3.0.3",
+    "@ckeditor/ckeditor5-theme-lark": "^31.0.0",
     "axios": "^0.23.0",
     "classnames": "^2.3.1",
     "countries-and-timezones": "^3.3.0",
@@ -15,8 +18,10 @@
     "next": "latest",
     "proptypes": "^1.1.0",
     "react": "^17.0.2",
+    "react-cropper": "^2.1.8",
     "react-datepicker": "^4.3.0",
     "react-dom": "^17.0.2",
+    "react-dropzone": "^11.4.2",
     "react-hook-form": "^7.17.4",
     "react-icons": "^4.3.1",
     "react-loader-spinner": "^4.0.0",
