@@ -48,7 +48,6 @@ public class Event {
     @NotNull
     private LocalDateTime endDate;
 
-    @NotBlank
     private String imagePath;
     @NotBlank
     private String description;

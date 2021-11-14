@@ -42,9 +42,11 @@ function MobileNavbar({closeMenu}) {
                     <NavbarItem href="" onClick={logout}>Logout</NavbarItem>
                 </ul>
             </div>
-            <div className="absolute bottom-2 left-0 flex w-full p-2">
+            <Link href="/create/event">
+            <div className="absolute bottom-2 left-0 flex w-full p-2" onClick={closeMenu}>
                 <Button fullWidth={true} size="xl" appearance="success">Create Event</Button>
             </div>
+            </Link>
         </>}
 
     </div>
@@ -106,7 +108,7 @@ function Header() {
                                     className="py-2 px-9 bg-gray-100 rounded ring-1 text-sm ring-gray-200 outline-none h-full"
                                     placeholder="Search on Evently"/>
                             </div>
-                            <Link href={"/event/create"}>
+                            <Link href={"/create/event"}>
                                 <Button appearance="success" size="lg">Create Event</Button>
                             </Link>
                         </>}

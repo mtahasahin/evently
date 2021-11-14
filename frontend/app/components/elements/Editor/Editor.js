@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import {useController} from "react-hook-form";
 
-function Editor({ editorLoaded, name, control, placeholder}) {
+function Editor({editorLoaded, name, control}) {
     const editorRef = useRef();
     const { CKEditor, ClassicEditor } = editorRef.current || {};
     const {field} = useController({control,name});
@@ -31,7 +31,9 @@ function Editor({ editorLoaded, name, control, placeholder}) {
                             "bulletedList",
                             "numberedList",
                         ],
-                        placeholder:placeholder??""
+                    }}
+                    onReady={(editor) => {
+                        editor.setData(field.value);
                     }}
                     onChange={(event, editor) => {
                         const data = editor.getData();

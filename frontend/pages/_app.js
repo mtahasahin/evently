@@ -18,7 +18,7 @@ function MyApp({Component, pageProps}) {
 
     return <AuthProvider>
         <ToastContainer/>
-        <Route protectedRoutes={["/profile", "/edit/profile", "/edit/password", "/edit/close-account"]}
+        <Route protectedRoutes={["/profile", "/edit/profile", "/edit/password", "/edit/close-account", "/create/event"]}
                publicRoutes={["/login", "/signup", "/"]}>
             {getLayout(<Component {...pageProps} />)}
         </Route>

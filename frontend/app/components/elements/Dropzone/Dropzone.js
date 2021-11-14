@@ -6,7 +6,7 @@ import Button from "../Button/Button";
 import {Cropper} from "react-cropper";
 import {useController} from "react-hook-form";
 
-function Dropzone({name, control}) {
+function Dropzone({name, control, displayedImage}) {
     const {field} = useController({name:name,control:control});
     const [image, setImage] = useState(null);
     const cropperRef = useRef(null);
@@ -41,6 +41,7 @@ function Dropzone({name, control}) {
     return (
         <div className={styles.container} {...getRootProps()}>
             <input {...getInputProps()} />
+            {displayedImage && !image && <img src={displayedImage} alt="highlight photo"/> }
             <RiImageAddLine size="3rem" color="lightgray"/>
             {
                 isDragActive ?
