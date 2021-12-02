@@ -7,7 +7,7 @@ import {Cropper} from "react-cropper";
 import {useController} from "react-hook-form";
 
 function Dropzone({name, control, displayedImage}) {
-    const {field} = useController({name:name,control:control});
+    const {field} = useController({name: name, control: control});
     const [image, setImage] = useState(null);
     const cropperRef = useRef(null);
 
@@ -28,7 +28,7 @@ function Dropzone({name, control, displayedImage}) {
         accept: 'image/jpeg, image/png'
     })
 
-    const fileRejectionItems = fileRejections.map(({ file, errors }) => (
+    const fileRejectionItems = fileRejections.map(({file, errors}) => (
         <li key={file.name}>
             <ul>
                 {errors.map(e => (
@@ -41,7 +41,7 @@ function Dropzone({name, control, displayedImage}) {
     return (
         <div className={styles.container} {...getRootProps()}>
             <input {...getInputProps()} />
-            {displayedImage && !image && <img src={displayedImage} alt="highlight photo"/> }
+            {displayedImage && !image && <img src={displayedImage} alt="highlight photo"/>}
             <RiImageAddLine size="3rem" color="lightgray"/>
             {
                 isDragActive ?
@@ -49,7 +49,8 @@ function Dropzone({name, control, displayedImage}) {
                     !image ?
                         <>
                             <p>Drag and drop to upload</p>
-                            <Button type="button" size="md" appearance="white" onClick={open}>Pick a Highlight Photo</Button>
+                            <Button type="button" size="md" appearance="white" onClick={open}>Pick a Highlight
+                                Photo</Button>
                         </> : <>
                             <Cropper
                                 name={name}
@@ -67,11 +68,22 @@ function Dropzone({name, control, displayedImage}) {
                                 checkOrientation={false}
                                 guides={true}
                                 ref={cropperRef}
-                                ready={() => {cropperRef.current.cropper.getCroppedCanvas().toBlob(blob => {field.onChange(blob)})}}
-                                cropend={() => {cropperRef.current.cropper.getCroppedCanvas().toBlob(blob => {field.onChange(blob)})}}
+                                ready={() => {
+                                    cropperRef.current.cropper.getCroppedCanvas().toBlob(blob => {
+                                        field.onChange(blob)
+                                    })
+                                }}
+                                cropend={() => {
+                                    cropperRef.current.cropper.getCroppedCanvas().toBlob(blob => {
+                                        field.onChange(blob)
+                                    })
+                                }}
                             />
                             <p>or</p>
-                            <Button type="button" size="md" appearance="danger" onClick={() => {setImage(null);field.onChange(null)}}>Remove the Highlight
+                            <Button type="button" size="md" appearance="danger" onClick={() => {
+                                setImage(null);
+                                field.onChange(null)
+                            }}>Remove the Highlight
                                 Photo</Button>
                         </>
             }

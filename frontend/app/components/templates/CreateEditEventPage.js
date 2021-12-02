@@ -19,6 +19,8 @@ import moment from "moment-timezone";
 import Loader from "react-loader-spinner";
 import {toast} from "react-toastify";
 import router from "next/router";
+import useActiveEvent from "../../hooks/useActiveEvent";
+import LoadingIndicator from "../elements/LoadingIndicator/LoadingIndicator";
 
 const timezoneOptions = timezones.map(e => ({name: e, value: e}))
 const languageOptions = languages.map(e => ({name: `${e.name} (${e.nativeName})`, value: e.code}))
@@ -27,22 +29,12 @@ const profileVisibilityOptions = [{name: "Everyone", value: "PUBLIC"}, {
     value: "ONLY_WITH_LINK"
 }];
 
-const LoadingIndicator = ({isLoading}) => (
-    <div
-        className={`bg-white rounded-t h-full w-full py-10 px-8 flex justify-center ${!isLoading ? "hidden" : ""}`}>
-        <Loader type="Oval"
-                color="gray"
-                height={40}
-                width={40}
-                visible={true}/>
-    </div>
-)
 
 const FormContent = ({isLoading, edit, errors, control, register, isOnlineEvent, prevImage, submitting}) => (
     <div className={`${isLoading ? "hidden" : ""}`}>
         <div className="bg-white rounded-t h-full w-full py-10 px-8">
             <div className="flex flex-col">
-                <h1 className="text-2xl mb-5">{edit?"Edit":"Create"} Event</h1>
+                <h1 className="text-2xl mb-5">{edit ? "Edit" : "Create"} Event</h1>
                 <FormGroup>
                     <div className="w-full">
                         <TextInput label="WHAT SHOULD WE DO?" name="name" register={register}
@@ -169,7 +161,10 @@ const FormContent = ({isLoading, edit, errors, control, register, isOnlineEvent,
     </div>
 )
 
-const CreateEditEventPage = ({edit, slug}) => {
+const CreateEditEventPage = () => {
+    const {slug, event, isLoading, isError, reload} = useActiveEvent();
+    const edit = !!slug;
+
     const [isPageLoaded, setIsPageLoaded] = React.useState(false);
     const [submitting, setSubmitting] = React.useState(false);
     const [prevImage, setPrevImage] = React.useState(null);
@@ -190,8 +185,8 @@ const CreateEditEventPage = ({edit, slug}) => {
             language: user.profile.language ?? "en",
             limited: "false",
             description: "",
-            approvalRequired:false,
-            eventLocationType:false
+            approvalRequired: false,
+            eventLocationType: false
         }
     });
 
@@ -199,38 +194,44 @@ const CreateEditEventPage = ({edit, slug}) => {
         if (!edit) {
             setIsPageLoaded(true);
         } else {
-            EventApi.getEvent(slug).then(res => {
-                if (!res.data.data.organizing) {
-                    router.push("/404");
-                }
-                reset({
-                    name: res.data.data.name,
-                    description: res.data.data.description,
-                    startDate: moment.tz(res.data.data.startDate, moment.tz.guess()),
-                    endDate: moment.tz(res.data.data.endDate, moment.tz.guess()),
-                    timezone: res.data.data.timezone,
-                    location: res.data.data.location,
-                    language: res.data.data.language,
-                    limited: String(res.data.data.limited),
-                    attendeeLimit: res.data.data.attendeeLimit,
-                    approvalRequired: res.data.data.approvalRequired,
-                    visibility: res.data.data.visibility,
-                });
-                setPrevImage(res.data.data.imagePath);
-                setIsPageLoaded(true);
-            }).catch(err => {
+            if (isLoading)
+                return;
+            if (isError || !event.organizing) {
                 router.push("/404");
-            })
+                return;
+            }
+
+            reset({
+                name: event.name,
+                description: event.description,
+                startDate: moment.tz(event.startDate, moment.tz.guess()),
+                endDate: moment.tz(event.endDate, moment.tz.guess()),
+                timezone: event.timezone,
+                location: event.location,
+                language: event.language,
+                limited: String(event.limited),
+                attendeeLimit: event.attendeeLimit,
+                approvalRequired: event.approvalRequired,
+                visibility: event.visibility,
+                eventLocationType: event.eventLocationType === "ONLINE",
+                eventUrl: event.eventUrl,
+            });
+            setPrevImage(event.imagePath);
+            setIsPageLoaded(true);
         }
-    }, []);
+    }, [event]);
 
     const isOnlineEvent = useWatch({control: control, name: "eventLocationType"});
 
     const onSubmit = data => {
         setSubmitting(true);
-        if(edit){
-            EventApi.editEvent({slug,...data}).then(res => {
+        if (edit) {
+            EventApi.editEvent({slug, ...data}).then(res => {
                 toast("Event updated.", {type: "success"});
+                reload(res.data, false)
+                    .then(() => {
+                        router.push(`/event/${slug}`);
+                    })
             }).catch(err => {
                 toast(err.response.data.message, {type: "error"});
                 err.response?.data?.errors?.forEach(err => {
@@ -240,11 +241,14 @@ const CreateEditEventPage = ({edit, slug}) => {
                 .finally(() => {
                     setSubmitting(false);
                 })
-        }
-        else{
+        } else {
             EventApi.createEvent(data)
                 .then(res => {
                     toast("Event created.", {type: "success"});
+                    reload(res.data, false)
+                        .then(() => {
+                            router.push(`/event/${res.data.data.slug}`);
+                        })
                 })
                 .catch(err => {
                     toast(err.response.data.message, {type: "error"});

@@ -1,5 +1,5 @@
 import axios from "axios";
-import {REGISTER_URL, LOGIN_URL} from "./urls";
+import {LOGIN_URL, REGISTER_URL} from "./urls";
 
 
 const register = (name, email, password) => {

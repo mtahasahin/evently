@@ -8,16 +8,18 @@ import Loader from "react-loader-spinner";
 
 const LoginPage = () => {
     const [errorMessage, setErrorMessage] = useState(null);
-    const {login, loading} = useAuth();
+    const {login} = useAuth();
+    const [loading, setLoading] = useState(false);
     const onSubmit = data => {
+        setLoading(true);
         login(data.email, data.password).catch(e => {
             clearErrors();
             setError("email", {type: "value"})
             setError("password", {type: "value"})
             setErrorMessage(e.response.data.message)
-        });
+        }).finally(() => setLoading(false));
     }
-    const {register, handleSubmit, watch, formState: {errors}, setError, clearErrors} = useForm();
+    const {register, handleSubmit, formState: {errors}, setError, clearErrors} = useForm();
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>

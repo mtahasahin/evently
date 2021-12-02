@@ -11,7 +11,6 @@ const useAuth = () => {
         accessToken: value.accessToken,
         refreshToken: value.refreshToken,
         login: (email, password) => {
-            setValue(prev => ({...prev, loading: true}))
             return AuthApi.login(email, password).then(res => {
                 setAccessToken(res.data.data.accessToken)
                 setRefreshToken(res.data.data.refreshToken)
@@ -25,7 +24,6 @@ const useAuth = () => {
             }).finally(() => setValue(value => ({...value, loading: false})));
         },
         signup: (name, email, password) => {
-            setValue(prev => ({...prev, loading: true}))
             return AuthApi.register(name, email, password).then(res => {
                 setAccessToken(res.data.data.accessToken)
                 setRefreshToken(res.data.data.refreshToken)
@@ -44,7 +42,7 @@ const useAuth = () => {
             setValue({authenticated: false, user: null, loading: false, accessToken: null, refreshToken: null});
         },
         reload: () => {
-            setValue(prev => ({...prev, user:null, loading: true}))
+            setValue(prev => ({...prev, user: null}))
         }
     }
 }

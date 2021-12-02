@@ -5,7 +5,8 @@ import com.github.mtahasahin.evently.enums.EventVisibility;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,7 +14,8 @@ import java.util.HashSet;
 @AllArgsConstructor
 @Builder
 public class DisplayEventDto {
-    private HashSet<EventQuestionDto> questions = new HashSet<>();
+    private UserLightDto organizer;
+    private List<EventQuestionDto> questions = new ArrayList<>();
     private String name;
     private String slug;
     private LocalDateTime startDate;
@@ -27,6 +29,7 @@ public class DisplayEventDto {
     private String language;
     private boolean limited;
     private Integer attendeeLimit;
+    private int attendeeCount;
     private boolean eventStarted;
     private boolean eventEnded;
     private boolean approvalRequired;
@@ -34,5 +37,8 @@ public class DisplayEventDto {
     private boolean waitingApproval;
     private boolean organizing;
     private EventVisibility visibility;
+    public boolean isCanSee(){
+        return joined || organizing;
+    }
 }
 

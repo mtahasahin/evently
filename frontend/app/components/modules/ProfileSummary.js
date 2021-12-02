@@ -36,7 +36,7 @@ const FollowButton = ({username}) => {
     const {reload} = useProfile(username);
 
     const followUser = () => {
-        if(!authenticated){
+        if (!authenticated) {
             router.push("/login");
             return;
         }

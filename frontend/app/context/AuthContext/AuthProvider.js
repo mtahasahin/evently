@@ -32,8 +32,7 @@ export const AuthProvider = ({children}) => {
                     accessToken: null,
                     refreshToken: null
                 }))
-        }
-        else if(!accessToken){
+        } else if (!accessToken) {
             setValue({
                 authenticated: false,
                 user: null,

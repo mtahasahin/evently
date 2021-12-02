@@ -18,12 +18,15 @@ export default function Route({protectedRoutes, publicRoutes, children}) {
 
     }, [loading, authenticated, pathIsProtected, pathIsPublic]);
 
-
-    if (!authenticated && pathIsProtected) {
+    if (!router.isReady) {
         return null;
     }
 
-    if (authenticated && pathIsPublic) {
+    if ((loading || !authenticated) && pathIsProtected) {
+        return null;
+    }
+
+    if ((loading || authenticated) && pathIsPublic) {
         return null;
     }
 

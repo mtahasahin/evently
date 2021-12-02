@@ -36,6 +36,24 @@ public class Event {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "event")
     private Set<EventQuestion> eventQuestions = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "event")
+    private Set<EventApplication> eventApplications = new HashSet<>();
+
+    public int getAttendeeCount(){
+        return (int) eventApplications.stream().filter(EventApplication::isConfirmed).count() + 1;
+    }
+
+    public void addEventApplication(EventApplication eventApplication){
+        eventApplications.add(eventApplication);
+        eventApplication.setEvent(this);
+        eventApplication.getApplicant().getEventApplications().add(eventApplication);
+    }
+
+    public void addEventQuestion(EventQuestion eventQuestion){
+        eventQuestions.add(eventQuestion);
+        eventQuestion.setEvent(this);
+    }
+
     @NotBlank
     private String name;
     @NotBlank

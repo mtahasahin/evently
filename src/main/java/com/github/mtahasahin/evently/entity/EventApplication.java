@@ -1,8 +1,12 @@
 package com.github.mtahasahin.evently.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,6 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "EVENT_APPLICATIONS", indexes = {
         @Index(columnList = "EVENT_ID, USER_ID")
 })
@@ -30,6 +35,12 @@ public class EventApplication {
 
     private boolean confirmed;
 
-    @OneToMany(mappedBy = "application")
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL)
     private Set<EventQuestionAnswer> answers = new HashSet<>();
 }

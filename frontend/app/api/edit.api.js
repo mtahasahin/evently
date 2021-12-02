@@ -1,5 +1,5 @@
 import AxiosInstance from "./AxiosInstance";
-import {PROFILE_URL, CHANGE_PASSWORD_URL, CLOSE_ACCOUNT_URL} from "./urls";
+import {CHANGE_PASSWORD_URL, CLOSE_ACCOUNT_URL, PROFILE_URL} from "./urls";
 
 const updateProfile = ({
                            email,

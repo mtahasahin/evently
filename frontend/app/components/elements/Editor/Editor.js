@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, {useEffect, useRef} from "react";
 import {useController} from "react-hook-form";
 
 function Editor({editorLoaded, name, control}) {
     const editorRef = useRef();
-    const { CKEditor, ClassicEditor } = editorRef.current || {};
-    const {field} = useController({control,name});
+    const {CKEditor, ClassicEditor} = editorRef.current || {};
+    const {field} = useController({control, name});
 
     useEffect(() => {
         editorRef.current = {
@@ -37,7 +37,6 @@ function Editor({editorLoaded, name, control}) {
                     }}
                     onChange={(event, editor) => {
                         const data = editor.getData();
-                        // console.log({ event, editor, data })
                         field.onChange(data);
                     }}
                 />

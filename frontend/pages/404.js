@@ -12,7 +12,8 @@ const NotFound = () => {
             <div className="flex flex-col-reverse gap-y-6 sm:flex-row justify-between items-center">
                 <div className="flex flex-col gap-y-6 items-start px-4">
                     <h1 className="text-4xl font-bold">The page you are looking for doesn't exist</h1>
-                    <h3 className="text-lg text-gray-600">You might have mistyped the address, or the page might have moved.</h3>
+                    <h3 className="text-lg text-gray-600">You might have mistyped the address, or the page might have
+                        moved.</h3>
                     <Link href="/"><Button appearance="secondary" size="xl">Go to homepage</Button></Link>
                 </div>
                 <div className="">

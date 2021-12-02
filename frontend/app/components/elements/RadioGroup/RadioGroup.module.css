@@ -6,13 +6,13 @@
     transition: all 50ms;
 }
 
-.checked{
+.checked {
     @apply
     bg-yellow-500
     border-none
 }
 
-.not-checked{
+.not-checked {
     @apply
     bg-white
     border

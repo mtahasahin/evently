@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import {AuthProvider} from "../app/context/AuthContext/AuthProvider";
 import Route from "../app/components/Route";
-import {ToastContainer} from 'react-toastify';
+import {Flip, ToastContainer} from 'react-toastify';
 
 function MyApp({Component, pageProps}) {
 
@@ -17,9 +17,12 @@ function MyApp({Component, pageProps}) {
     const getLayout = Component.getLayout || ((page) => page)
 
     return <AuthProvider>
-        <ToastContainer/>
-        <Route protectedRoutes={["/profile", "/edit/profile", "/edit/password", "/edit/close-account", "/create/event"]}
-               publicRoutes={["/login", "/signup", "/"]}>
+        <ToastContainer transition={Flip} hideProgressBar={true} theme="colored"/>
+        <Route
+            protectedRoutes={["/profile", "/edit/profile", "/edit/password", "/edit/close-account", "/create/event",
+                "/event/[slug]/edit", "/event/[slug]/questions",
+                "/event/[slug]/questions/edit", "/event/[slug]/questions/answers", "/event/[slug]/questions/answers/all"]}
+            publicRoutes={["/login", "/signup", "/"]}>
             {getLayout(<Component {...pageProps} />)}
         </Route>
     </AuthProvider>

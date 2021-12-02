@@ -33,7 +33,7 @@ const EditProfilePage = () => {
             reset(values);
         })
     }, [])
-    const {register, control, handleSubmit, watch, formState: {errors}, reset, setError} = useForm();
+    const {register, control, handleSubmit, formState: {errors}, reset, setError} = useForm();
     const onSubmit = data => {
         EditApi.updateProfile({...data})
             .then(res => {
@@ -42,7 +42,7 @@ const EditProfilePage = () => {
             })
             .catch(err => {
                 toast(err.response.data.message, {type: "error"});
-                err.response.data.errors.forEach(err => {
+                err.response?.data?.errors?.forEach(err => {
                     setError(err.field, {type: "value", message: err.message});
                 })
             })
@@ -127,7 +127,6 @@ const EditProfilePage = () => {
                 <div className="w-full px-8 py-6 bg-gray-50 rounded-b flex flex-row justify-end">
                     <Button type="submit" appearance="dark" size="lg">Save Changes</Button>
                 </div>
-                <div></div>
             </div>
         </form>
     );

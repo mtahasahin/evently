@@ -19,16 +19,18 @@ const ProfileSocial = ({profile}) => {
             <h6 className="text-xs text-gray-700">ELSEWHERE</h6>
             <ul className="flex flex-col">
                 {profile.websiteUrl &&
-                <a href={profile.websiteUrl}><SocialLink url={profile.websiteUrl}><HiOutlineLink size="1.2rem"/>Website</SocialLink></a>}
+                    <a href={profile.websiteUrl}><SocialLink url={profile.websiteUrl}><HiOutlineLink size="1.2rem"/>Website</SocialLink></a>}
                 {profile.twitterUsername &&
-                <a href={`https://twitter.com/${profile.twitterUsername}`}><SocialLink><BsTwitter size="1.2rem"/>Twitter</SocialLink></a>}
+                    <a href={`https://twitter.com/${profile.twitterUsername}`}><SocialLink><BsTwitter size="1.2rem"/>Twitter</SocialLink></a>}
                 {profile.githubUsername &&
-                <a href={`https://github.com/${profile.githubUsername}`}><SocialLink><AiOutlineGithub size="1.2rem"/>GitHub</SocialLink></a>}
+                    <a href={`https://github.com/${profile.githubUsername}`}><SocialLink><AiOutlineGithub
+                        size="1.2rem"/>GitHub</SocialLink></a>}
                 {profile.facebookUsername &&
-                <a href={`https://facebook.com/${profile.facebookUsername}`}><SocialLink><FaFacebookSquare
-                    size="1.2rem"/>Facebook</SocialLink></a>}
+                    <a href={`https://facebook.com/${profile.facebookUsername}`}><SocialLink><FaFacebookSquare
+                        size="1.2rem"/>Facebook</SocialLink></a>}
                 {profile.instagramUsername &&
-                <a href={`https://instagram.com/${profile.instagramUsername}`}><SocialLink><FaInstagram size="1.2rem"/>Instagram</SocialLink></a>}
+                    <a href={`https://instagram.com/${profile.instagramUsername}`}><SocialLink><FaInstagram
+                        size="1.2rem"/>Instagram</SocialLink></a>}
             </ul>
         </div>
     );

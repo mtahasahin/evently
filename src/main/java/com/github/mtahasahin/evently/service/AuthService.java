@@ -73,7 +73,7 @@ public class AuthService {
 
         var userAuthority = authorityRepository.getByAuthority("ROLE_USER");
         userEntity.getAuthorities().add(userAuthority);
-        userRepository.save(userEntity);
+        userRepository.saveAndFlush(userEntity);
 
         return authenticate(registerRequest.getEmail(), registerRequest.getPassword());
     }
@@ -85,7 +85,7 @@ public class AuthService {
             throw new CustomValidationException(new ApiResponse.ApiSubError("currentPassword", "Current password is invalid"));
         }
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
     }
 
     public void closeAccount(long userId, String password) {

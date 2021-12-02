@@ -63,7 +63,7 @@ public class UserService {
         }
 
         userMapper.updateUserFromDto(userDto, userEntity);
-        userRepository.save(userEntity);
+        userRepository.saveAndFlush(userEntity);
         return userMapper.userToUserDto(userEntity);
     }
 
@@ -74,7 +74,7 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
 
         userToFollow.addFollower(userEntity);
-        userRepository.saveAll(List.of(userEntity, userToFollow));
+        userRepository.saveAllAndFlush(List.of(userEntity, userToFollow));
     }
 
     public void unfollow(long requestingUserId, String username){
@@ -84,6 +84,6 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
 
         userToFollow.removeFollower(userEntity);
-        userRepository.save(userToFollow);
+        userRepository.saveAndFlush(userToFollow);
     }
 }

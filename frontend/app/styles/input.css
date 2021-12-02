@@ -1,6 +1,7 @@
 .base-input {
     @apply
     placeholder-gray-400
+    placeholder-opacity-70
     border
     bg-gray-50
     p-3 w-full

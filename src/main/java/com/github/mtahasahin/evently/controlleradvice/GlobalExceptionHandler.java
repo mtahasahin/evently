@@ -1,9 +1,6 @@
 package com.github.mtahasahin.evently.controlleradvice;
 
-import com.github.mtahasahin.evently.exception.CustomValidationException;
-import com.github.mtahasahin.evently.exception.EmailAlreadyTakenException;
-import com.github.mtahasahin.evently.exception.UserNotFoundException;
-import com.github.mtahasahin.evently.exception.UsernameAlreadyTakenException;
+import com.github.mtahasahin.evently.exception.*;
 import com.github.mtahasahin.evently.wrapper.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +30,31 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = UserNotFoundException.class)
     public ResponseEntity<ApiResponse<Object>> UserNotFoundException(UserNotFoundException userNotFoundException) {
         return new ResponseEntity<>(ApiResponse.Error(null, userNotFoundException.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = EventNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> EventNotFoundException(EventNotFoundException eventNotFoundException) {
+        return new ResponseEntity<>(ApiResponse.Error(null, eventNotFoundException.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = EventIsAlreadyOverException.class)
+    public ResponseEntity<ApiResponse<Object>> EventIsAlreadyOverException(EventIsAlreadyOverException eventIsAlreadyOverException) {
+        return new ResponseEntity<>(ApiResponse.Error(null, eventIsAlreadyOverException.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = UserHasAlreadyAppliedToEventException.class)
+    public ResponseEntity<ApiResponse<Object>> UserHasAlreadyAppliedToEventException(UserHasAlreadyAppliedToEventException userHasAlreadyAppliedToEventException) {
+        return new ResponseEntity<>(ApiResponse.Error(null, userHasAlreadyAppliedToEventException.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = CustomAccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Object>> CustomAccessDeniedException(CustomAccessDeniedException customAccessDeniedException) {
+        return new ResponseEntity<>(ApiResponse.Error(null, customAccessDeniedException.getMessage()), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(value = EventQuestionNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> CustomAccessDeniedException(EventQuestionNotFoundException eventQuestionNotFoundException) {
+        return new ResponseEntity<>(ApiResponse.Error(null, eventQuestionNotFoundException.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -75,8 +97,8 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNAUTHORIZED);
     }
 
-//    @ExceptionHandler(value = Exception.class)
-//    public ResponseEntity<ApiResponse<Object>> handleException(Exception exception) {
-//        return new ResponseEntity<>(ApiResponse.Error(null, exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<ApiResponse<Object>> handleException(Exception exception) {
+        return new ResponseEntity<>(ApiResponse.Error(null, exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

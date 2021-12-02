@@ -14,6 +14,7 @@ const Button = ({appearance, size, fullWidth, children, ...props}) => {
                 appearance === 'danger' ? styles.danger : undefined,
                 appearance === 'white' ? styles.white : undefined,
                 !appearance ? styles.primary : undefined,
+                size === 'sm' ? styles.small : undefined,
                 size === 'md' ? styles.medium : undefined,
                 size === 'lg' ? styles.large : undefined,
                 size === 'xl' ? styles["x-large"] : undefined,

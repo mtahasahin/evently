@@ -1,13 +1,14 @@
 import React from 'react';
 import UserHeader from "../../modules/Header/Header";
 import EditPageNavbar from "../../modules/EditPageNavbar/EditPageNavbar";
+import Container from "../../Container";
 
 const EditPageLayout = (page) => {
     return (
         <div className="flex flex-col gap-12 bg-gray-100 min-h-screen">
             <UserHeader/>
-            <div className="container mx-auto w-full xl:w-4/5 max-w-screen-xl">
-                <div className="flex flex-col lg:flex-row gap-4">
+            <Container>
+                <div className="flex flex-col lg:flex-row gap-4 w-full">
                     <div className="w-full lg:w-1/4">
                         <EditPageNavbar/>
                     </div>
@@ -15,7 +16,7 @@ const EditPageLayout = (page) => {
                         {page}
                     </div>
                 </div>
-            </div>
+            </Container>
         </div>
     );
 };

@@ -6,13 +6,13 @@
     transition: all 50ms;
 }
 
-.selected{
+.selected {
     @apply
     bg-yellow-500
     border-none
 }
 
-.not-selected{
+.not-selected {
     @apply
     bg-white
     border

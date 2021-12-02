@@ -3,6 +3,7 @@ package com.github.mtahasahin.evently.mapper;
 import com.github.mtahasahin.evently.dto.PrivateProfileDto;
 import com.github.mtahasahin.evently.dto.PublicProfileDto;
 import com.github.mtahasahin.evently.dto.UserDto;
+import com.github.mtahasahin.evently.dto.UserLightDto;
 import com.github.mtahasahin.evently.entity.AppUser;
 import org.mapstruct.*;
 
@@ -45,4 +46,8 @@ public interface UserMapper {
     @Mapping(target = "followersCount", expression = "java(user.getFollowers()!= null ? (int) user.getFollowers().stream().filter(e -> e.isConfirmed()).count():0)")
     @Mapping(target = "followingsCount", expression = "java(user.getFollowings()!= null ? (int) user.getFollowings().stream().filter(e -> e.isConfirmed()).count():0)")
     PublicProfileDto userToPublicProfileDto(AppUser user, boolean following, boolean hasFollowingRequest, boolean canEdit);
+
+    @Mapping(target = "name", source = "userProfile.name")
+    @Mapping(target = "avatar", ignore = true)
+    UserLightDto userToUserLightDto(AppUser user);
 }
