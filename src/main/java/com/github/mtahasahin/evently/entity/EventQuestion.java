@@ -15,7 +15,7 @@ import java.util.Set;
 @Table(name = "EVENTQUESTIONS", indexes = {
         @Index(columnList = "EVENT_ID")
 })
-public class EventQuestion {
+public class EventQuestion extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

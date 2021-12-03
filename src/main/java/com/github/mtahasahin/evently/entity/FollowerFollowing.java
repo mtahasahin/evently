@@ -12,7 +12,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @Table(name = "FOLLOWER_FOLLOWING")
-public class FollowerFollowing {
+public class FollowerFollowing extends Auditable {
 
     @EmbeddedId
     private FollowerFollowingId id;

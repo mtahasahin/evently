@@ -66,8 +66,8 @@ public class EventApplicationService {
 
         Pageable pageable = PageRequest.of(page, 5);
         var applications = fetchAll ?
-                eventApplicationRepository.findAllByEventIdOrderByCreatedAtDesc(event.getId(), pageable) :
-                eventApplicationRepository.findAllByEventIdAndUpdatedAtGreaterThanOrConfirmedIsFalseOrderByCreatedAtDesc(event.getId(), LocalDateTime.now().minusHours(1), pageable);
+                eventApplicationRepository.findAllByEventIdOrderByCreatedDateDesc(event.getId(), pageable) :
+                eventApplicationRepository.findAllByEventIdAndLastModifiedDateGreaterThanOrConfirmedIsFalseOrderByCreatedDateDesc(event.getId(), LocalDateTime.now().minusHours(1), pageable);
 
         List<EventApplicationDto> result = new ArrayList<>();
         applications.getContent().forEach((application) -> result.add(convertToDto(application)));
@@ -128,8 +128,8 @@ public class EventApplicationService {
         var dto = new EventApplicationDto();
         dto.setId(application.getId());
         dto.setApproved(application.isConfirmed());
-        dto.setCreatedAt(application.getCreatedAt());
-        dto.setUpdatedAt(application.getUpdatedAt());
+        dto.setCreatedAt(application.getCreatedDate());
+        dto.setUpdatedAt(application.getLastModifiedDate());
 
         var questions = eventQuestionMapper.eventQuestionEntityToDto(application.getEvent().getEventQuestions());
         questions.sort(Comparator.comparing(EventQuestionDto::getOrder));

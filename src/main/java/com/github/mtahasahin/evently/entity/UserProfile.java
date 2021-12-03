@@ -1,6 +1,5 @@
 package com.github.mtahasahin.evently.entity;
 
-import com.github.mtahasahin.evently.validator.TimeZone;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
@@ -15,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Builder
 @Table(name = "USERPROFILES")
-public class UserProfile {
+public class UserProfile extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

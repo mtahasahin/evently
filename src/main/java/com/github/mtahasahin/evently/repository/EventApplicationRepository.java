@@ -13,6 +13,6 @@ import java.util.Optional;
 public interface EventApplicationRepository extends JpaRepository<EventApplication, Long> {
     Optional<EventApplication> findByEventSlugAndId(String slug, Long id);
     Optional<EventApplication> findByEventSlugAndApplicantId(String slug, Long applicantId);
-    Page<EventApplication> findAllByEventIdOrderByCreatedAtDesc(Long eventId, Pageable pageable);
-    Page<EventApplication> findAllByEventIdAndUpdatedAtGreaterThanOrConfirmedIsFalseOrderByCreatedAtDesc(Long event_id, LocalDateTime updatedAt, Pageable pageable);
+    Page<EventApplication> findAllByEventIdOrderByCreatedDateDesc(Long eventId, Pageable pageable);
+    Page<EventApplication> findAllByEventIdAndLastModifiedDateGreaterThanOrConfirmedIsFalseOrderByCreatedDateDesc(Long event_id, LocalDateTime lastModifiedDate, Pageable pageable);
 }

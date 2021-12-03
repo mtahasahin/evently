@@ -24,7 +24,7 @@ import java.util.Set;
         @Index(columnList = "SLUG", unique = true),
         @Index(columnList = "ORGANIZER_ID"),
 })
-public class Event {
+public class Event extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

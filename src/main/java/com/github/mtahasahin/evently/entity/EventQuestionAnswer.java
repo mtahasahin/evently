@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Table(name = "EVENT_QUESTION_ANSWERS", indexes = {
         @Index(columnList = "EVENT_APPLICATION_ID, QUESTION_ID")
 })
-public class EventQuestionAnswer {
+public class EventQuestionAnswer extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
