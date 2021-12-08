@@ -1,7 +1,6 @@
 package com.github.mtahasahin.evently.entity;
 
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -23,12 +22,13 @@ public class UserProfile extends Auditable {
     private LocalDate dateOfBirth;
     private LocalDateTime registrationDate;
     private boolean profilePublic;
-    @Length(max = 50)
+    @Column(length = 50)
     private String location;
-    @Length(max = 50)
+    @Column(length = 50)
     private String timezone;
-    @Length(max = 50)
+    @Column(length = 50)
     private String language;
+    @Column(length = 500)
     private String about;
     private String websiteUrl;
     private String twitterUsername;

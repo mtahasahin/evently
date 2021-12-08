@@ -68,6 +68,7 @@ public class Event extends Auditable {
 
     private String imagePath;
     @NotBlank
+    @Column(length = 2000)
     private String description;
 
     @NotNull
