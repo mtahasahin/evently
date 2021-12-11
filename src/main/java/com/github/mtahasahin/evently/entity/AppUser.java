@@ -1,12 +1,16 @@
 package com.github.mtahasahin.evently.entity;
 
 import lombok.*;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.*;
 
+@Indexed(index = "user_index")
 @Entity
 @Getter
 @Setter
@@ -21,6 +25,7 @@ public class AppUser extends Auditable implements UserDetails, CredentialsContai
     @Column(name = "ID")
     private Long id;
 
+    @FullTextField
     @Column(name = "USERNAME", unique = true)
     private String username;
 
@@ -36,6 +41,7 @@ public class AppUser extends Auditable implements UserDetails, CredentialsContai
             inverseJoinColumns = @JoinColumn(name = "AUTHORITY_ID"))
     private Set<Authority> authorities = new HashSet<>();
 
+    @IndexedEmbedded
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserProfile userProfile;
 

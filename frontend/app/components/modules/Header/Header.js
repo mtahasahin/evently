@@ -1,4 +1,4 @@
-import {AiOutlineMenu, AiOutlineSearch} from "react-icons/ai";
+import {AiOutlineMenu} from "react-icons/ai";
 import React, {useState} from "react";
 import Link from "next/link";
 import useAuth from "../../../hooks/useAuth";
@@ -6,6 +6,7 @@ import {MdNotifications} from "react-icons/md";
 import NavbarDropdown from "../ProfileNavbarDropdown";
 import Button from "../../elements/Button/Button";
 import Container from "../../Container";
+import SearchBox from "../SearchBox";
 
 function NavbarItem({href, children, ...props}) {
     return (
@@ -104,13 +105,7 @@ function Header() {
                                 </Link>
                             </div>
                             {authenticated && <>
-                                <div className="navbar-search-wrapper relative ml-4">
-                                    <label className="absolute left-3 top-2 bottom-2"><AiOutlineSearch
-                                        color="rgba(156, 163, 175)" className="h-full w-full"/></label>
-                                    <input
-                                        className="py-2 px-9 bg-gray-100 rounded ring-1 text-sm ring-gray-200 outline-none h-full"
-                                        placeholder="Search on Evently"/>
-                                </div>
+                                <SearchBox/>
                                 <Link href={"/create/event"}>
                                     <a>
                                         <Button appearance="success" size="lg">Create Event</Button>

@@ -1,6 +1,7 @@
 package com.github.mtahasahin.evently.entity;
 
 import lombok.*;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ public class UserProfile extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @FullTextField(analyzer = "name")
     private String name;
     private LocalDate dateOfBirth;
     private LocalDateTime registrationDate;
@@ -28,6 +30,7 @@ public class UserProfile extends Auditable {
     private String timezone;
     @Column(length = 50)
     private String language;
+    @FullTextField(analyzer = "english")
     @Column(length = 500)
     private String about;
     private String websiteUrl;

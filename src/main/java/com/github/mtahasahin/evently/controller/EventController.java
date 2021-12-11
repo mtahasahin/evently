@@ -3,7 +3,6 @@ package com.github.mtahasahin.evently.controller;
 import com.github.mtahasahin.evently.dto.CreateUpdateEventForm;
 import com.github.mtahasahin.evently.dto.EventQuestionAnswerDto;
 import com.github.mtahasahin.evently.dto.EventQuestionDto;
-import com.github.mtahasahin.evently.entity.EventQuestionAnswer;
 import com.github.mtahasahin.evently.service.EventApplicationService;
 import com.github.mtahasahin.evently.service.EventService;
 import com.github.mtahasahin.evently.validator.EventFormValidator;

@@ -5,6 +5,7 @@ import com.github.mtahasahin.evently.enums.EventVisibility;
 import com.github.mtahasahin.evently.validator.Language;
 import com.github.mtahasahin.evently.validator.TimeZone;
 import lombok.*;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -15,6 +16,7 @@ import java.util.Set;
 
 
 @Entity
+@Indexed(index = "event_index")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,6 +31,7 @@ public class Event extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @IndexedEmbedded
     @ManyToOne(optional = false)
     @JoinColumn(name = "ORGANIZER_ID")
     private AppUser organizer;
@@ -37,39 +40,44 @@ public class Event extends Auditable {
     private Set<EventQuestion> eventQuestions = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "event")
+    @IndexedEmbedded
     private Set<EventApplication> eventApplications = new HashSet<>();
+    @FullTextField(analyzer = "english")
+    @NotBlank
+    private String name;
+    @KeywordField
+    @NotBlank
+    private String slug;
+    @KeywordField
+    @TimeZone
+    private String timezone;
+    @GenericField
+    @NotNull
+    private LocalDateTime startDate;
+    @GenericField
+    @NotNull
+    private LocalDateTime endDate;
+    @KeywordField
+    private String imagePath;
+    @FullTextField(analyzer = "english")
+    @NotBlank
+    @Column(length = 2000)
+    private String description;
+    @GenericField
+    private EventVisibility visibility;
 
-    public int getAttendeeCount(){
+    @Transient
+    @GenericField
+    @IndexingDependency(derivedFrom = {@ObjectPath({@PropertyValue(propertyName = "eventApplications")})})
+    public int getAttendeeCount() {
         return (int) eventApplications.stream().filter(EventApplication::isConfirmed).count() + 1;
     }
 
-    public void addEventApplication(EventApplication eventApplication){
+    public void addEventApplication(EventApplication eventApplication) {
         eventApplications.add(eventApplication);
         eventApplication.setEvent(this);
         eventApplication.getApplicant().getEventApplications().add(eventApplication);
     }
-
-    public void addEventQuestion(EventQuestion eventQuestion){
-        eventQuestions.add(eventQuestion);
-        eventQuestion.setEvent(this);
-    }
-
-    @NotBlank
-    private String name;
-    @NotBlank
-    private String slug;
-
-    @TimeZone
-    private String timezone;
-    @NotNull
-    private LocalDateTime startDate;
-    @NotNull
-    private LocalDateTime endDate;
-
-    private String imagePath;
-    @NotBlank
-    @Column(length = 2000)
-    private String description;
 
     @NotNull
     private EventLocationType eventLocationType;
@@ -78,7 +86,10 @@ public class Event extends Auditable {
     @Language
     private String language;
 
-    private EventVisibility visibility;
+    public void addEventQuestion(EventQuestion eventQuestion) {
+        eventQuestions.add(eventQuestion);
+        eventQuestion.setEvent(this);
+    }
     private String key;
     private boolean limited;
     private int attendeeLimit;

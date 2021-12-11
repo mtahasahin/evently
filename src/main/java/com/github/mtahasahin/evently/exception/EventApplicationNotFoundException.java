@@ -1,4 +1,4 @@
-package com.github.mtahasahin.evently.service;
+package com.github.mtahasahin.evently.exception;
 
 public class EventApplicationNotFoundException extends RuntimeException {
     public EventApplicationNotFoundException(long id) {

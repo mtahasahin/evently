@@ -76,7 +76,7 @@ function ProfileSummary({username}) {
         <div className="px-4 bg-gray-100">
             <div
                 className="mx-auto flex flex-col sm:flex-row items-center sm:items-stretch justify-center sm:justify-between w-full xl:w-4/5 max-w-screen-xl flex-nowrap py-8 gap-7">
-                <img src={profile.imagePath} height="120px"
+                <img src="https://i.pravatar.cc/300" height="120px"
                      width="120px" className="rounded-full h-full"/>
                 <div
                     className="flex flex-col sm:flex-row w-full justify-between items-center sm:items-stretch gap-4 sm:gap-0">

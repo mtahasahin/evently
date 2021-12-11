@@ -144,9 +144,10 @@ public class EventApplicationService {
     }
 
     public void cancelEventApplication(long userId, String eventSlug) {
-        var application = eventApplicationRepository.findByEventSlugAndApplicantId(eventSlug, userId)
-                .orElseThrow(() -> new EventApplicationNotFoundException("Event application not found"));
-
-        eventApplicationRepository.delete(application);
+        var event = eventRepository.findBySlug(eventSlug).orElseThrow(() -> new EventNotFoundException(eventSlug));
+        var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(String.valueOf(userId)));
+        var eventApplication = event.getEventApplications().stream().filter(e -> e.getApplicant().equals(user)).findFirst().orElseThrow(() -> new EventApplicationNotFoundException("User has not applied to the event"));
+        event.getEventApplications().remove(eventApplication);
+        eventRepository.saveAndFlush(event);
     }
 }
