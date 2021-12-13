@@ -3,6 +3,7 @@ import {HiOutlineLink} from "react-icons/hi";
 import {AiOutlineGithub} from "react-icons/ai";
 import {FaFacebookSquare, FaInstagram} from "react-icons/fa";
 import {BsTwitter} from "react-icons/bs";
+import useActiveProfile from "../../hooks/useActiveProfile";
 
 const SocialLink = ({children}) => {
     return <li
@@ -11,7 +12,8 @@ const SocialLink = ({children}) => {
     </li>
 }
 
-const ProfileSocial = ({profile}) => {
+const ProfileSocial = () => {
+    const {profile} = useActiveProfile();
     const exists = profile.websiteUrl || profile.twitterUsername || profile.githubUsername || profile.instagramUsername || profile.facebookUsername;
     return (
         exists &&

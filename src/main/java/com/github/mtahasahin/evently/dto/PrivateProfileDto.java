@@ -15,7 +15,7 @@ public class PrivateProfileDto implements Profile {
     private boolean profilePublic;
     private String about;
     private int followersCount;
-    private int followingsCount;
+    private int followingCount;
     private boolean following;
     private boolean hasFollowingRequest;
     private boolean canEdit;

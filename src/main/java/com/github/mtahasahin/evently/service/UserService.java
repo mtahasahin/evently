@@ -2,24 +2,36 @@ package com.github.mtahasahin.evently.service;
 
 
 import com.github.mtahasahin.evently.dto.UserDto;
+import com.github.mtahasahin.evently.dto.UserLightDto;
 import com.github.mtahasahin.evently.entity.AppUser;
+import com.github.mtahasahin.evently.entity.FollowerFollowing;
+import com.github.mtahasahin.evently.entity.FollowerFollowingId;
+import com.github.mtahasahin.evently.exception.CustomAccessDeniedException;
 import com.github.mtahasahin.evently.exception.CustomValidationException;
 import com.github.mtahasahin.evently.exception.UserNotFoundException;
 import com.github.mtahasahin.evently.interfaces.Profile;
 import com.github.mtahasahin.evently.mapper.UserMapper;
+import com.github.mtahasahin.evently.repository.FollowerFollowingRepository;
 import com.github.mtahasahin.evently.repository.UserRepository;
 import com.github.mtahasahin.evently.wrapper.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final FollowerFollowingRepository followerFollowingRepository;
     private final UserMapper userMapper;
+
+    private static final int PAGE_SIZE = 8;
 
     public UserDto getUser(long id) {
         AppUser user = userRepository.findById(id)
@@ -67,23 +79,138 @@ public class UserService {
         return userMapper.userToUserDto(userEntity);
     }
 
-    public void follow(long requestingUserId, String username){
+    public ApiResponse<Object> follow(long requestingUserId, String username) {
         AppUser userEntity = userRepository.findById(requestingUserId)
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + requestingUserId));
         AppUser userToFollow = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
+
+        if (userEntity.isFollowing(userToFollow)) {
+            return ApiResponse.Error(null, "You are already following this user");
+        }
 
         userToFollow.addFollower(userEntity);
         userRepository.saveAllAndFlush(List.of(userEntity, userToFollow));
+
+        if (userToFollow.getUserProfile().isProfilePublic()) {
+            return ApiResponse.Success(null, "You are now following this user");
+        } else {
+            return ApiResponse.Success(null, "A follow request has been sent to @" + username + " and is pending their approval.");
+        }
     }
 
-    public void unfollow(long requestingUserId, String username){
+    public ApiResponse<Object> unfollow(long requestingUserId, String username) {
         AppUser userEntity = userRepository.findById(requestingUserId)
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + requestingUserId));
         AppUser userToFollow = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
 
+        var isFollowing = userEntity.isFollowing(userToFollow);
+        var hasFollowingRequest = userEntity.hasFollowingRequest(userToFollow);
+
+        if (!isFollowing && !hasFollowingRequest) {
+            return ApiResponse.Error(null, "You are not following this user");
+        }
+
         userToFollow.removeFollower(userEntity);
         userRepository.saveAndFlush(userToFollow);
+
+        if (isFollowing) {
+            return ApiResponse.Success(null, "You are no longer following this user");
+        } else {
+            return ApiResponse.Success(null, "You've canceled your pending follow request");
+        }
+    }
+
+    public Page<UserLightDto> getFollowers(long requestingUserId, String requestedUserUsername, int page) {
+        AppUser requestingUserEntity = userRepository.findById(requestingUserId)
+                .orElseGet(() -> null);
+        AppUser requestedUserEntity = userRepository.findByUsername(requestedUserUsername)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + requestedUserUsername));
+
+        if (!requestedUserEntity.getUserProfile().isProfilePublic() &&
+                (requestingUserEntity == null || (requestedUserEntity != requestingUserEntity &&
+                        !requestingUserEntity.isFollowing(requestedUserEntity)))) {
+            throw new CustomAccessDeniedException();
+        }
+
+        var pageable = PageRequest.of(page, PAGE_SIZE);
+
+        var followers = userRepository.findByFollowings_Id_followingIdAndFollowings_confirmedOrderById(requestedUserEntity.getId(), true, pageable);
+
+        var result = followers.stream()
+                .map(userMapper::userToUserLightDto)
+                .collect(Collectors.toList());
+
+        return new PageImpl<UserLightDto>(result, pageable, followers.getTotalElements());
+    }
+
+    public Page<UserLightDto> getFollowing(long requestingUserId, String requestedUserUsername, int page) {
+        AppUser requestingUserEntity = userRepository.findById(requestingUserId)
+                .orElseGet(() -> null);
+        AppUser requestedUserEntity = userRepository.findByUsername(requestedUserUsername)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + requestedUserUsername));
+
+        if (!requestedUserEntity.getUserProfile().isProfilePublic() &&
+                (requestingUserEntity == null || (requestedUserEntity != requestingUserEntity &&
+                        !requestingUserEntity.isFollowing(requestedUserEntity)))) {
+            throw new CustomAccessDeniedException();
+        }
+
+        var pageable = PageRequest.of(page, PAGE_SIZE);
+
+        var following = userRepository.findByFollowers_Id_followerIdAndFollowers_confirmedOrderById(requestedUserEntity.getId(), true, PageRequest.of(page, PAGE_SIZE));
+
+        var result = following
+                .stream()
+                .map(userMapper::userToUserLightDto)
+                .collect(Collectors.toList());
+
+        return new PageImpl<UserLightDto>(result, pageable, following.getTotalElements());
+    }
+
+
+    public Page<UserLightDto> getFollowerRequests(long requestingUserId, String requestedUserUsername, int page) {
+        AppUser userEntity = userRepository.findById(requestingUserId)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + requestingUserId));
+
+        if (!userEntity.getUsername().equals(requestedUserUsername)) {
+            throw new CustomAccessDeniedException("Forbidden");
+        }
+
+        var pageable = PageRequest.of(page, PAGE_SIZE);
+
+        var followerRequests = userRepository.findByFollowings_Id_followingIdAndFollowings_confirmedOrderById(requestingUserId, false, PageRequest.of(page, PAGE_SIZE));
+
+        var result = followerRequests
+                .stream()
+                .map(userMapper::userToUserLightDto)
+                .collect(Collectors.toList());
+
+        return new PageImpl<UserLightDto>(result, pageable, followerRequests.getTotalElements());
+    }
+
+    public ApiResponse<Object> acceptFollowerRequest(long requestingUserId, String requestedUserUsername) {
+        AppUser requestedUserEntity = userRepository.findByUsername(requestedUserUsername)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + requestedUserUsername));
+
+        FollowerFollowing f = followerFollowingRepository.findById(new FollowerFollowingId(requestedUserEntity.getId(), requestingUserId))
+                .orElseThrow(CustomAccessDeniedException::new);
+
+        f.setConfirmed(true);
+
+        followerFollowingRepository.saveAndFlush(f);
+        return ApiResponse.Success(null, "Follower request accepted");
+    }
+
+    public ApiResponse<Object> rejectFollowerRequest(long requestingUserId, String requestedUserUsername) {
+        AppUser requestedUserEntity = userRepository.findByUsername(requestedUserUsername)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + requestedUserUsername));
+
+        FollowerFollowing f = followerFollowingRepository.findById(new FollowerFollowingId(requestedUserEntity.getId(), requestingUserId))
+                .orElseThrow(CustomAccessDeniedException::new);
+
+        followerFollowingRepository.delete(f);
+        return ApiResponse.Success(null, "Follower request rejected");
     }
 }

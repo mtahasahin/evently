@@ -2,6 +2,9 @@ package com.github.mtahasahin.evently.repository;
 
 
 import com.github.mtahasahin.evently.entity.AppUser;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -11,6 +14,18 @@ public interface UserRepository extends JpaRepository<AppUser, Long> {
     Optional<AppUser> findByUsername(String username);
 
     Optional<AppUser> findByEmail(String email);
+
+    @EntityGraph(
+            type = EntityGraph.EntityGraphType.FETCH,
+            attributePaths = {"userProfile"}
+    )
+    Page<AppUser> findByFollowers_Id_followerIdAndFollowers_confirmedOrderById(Long userId, boolean confirmed, Pageable pageable);
+
+    @EntityGraph(
+            type = EntityGraph.EntityGraphType.FETCH,
+            attributePaths = {"userProfile"}
+    )
+    Page<AppUser> findByFollowings_Id_followingIdAndFollowings_confirmedOrderById(Long userId, boolean confirmed, Pageable pageable);
 
     void deleteByUsername(String username);
 

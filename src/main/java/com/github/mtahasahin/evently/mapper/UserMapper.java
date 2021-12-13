@@ -29,7 +29,7 @@ public interface UserMapper {
     @Mapping(source = "user.userProfile.profilePublic", target = "profilePublic")
     @Mapping(source = "user.userProfile.registrationDate", target = "registrationDate")
     @Mapping(target = "followersCount", expression = "java(user.getFollowers()!= null ? (int) user.getFollowers().stream().filter(e -> e.isConfirmed()).count():0)")
-    @Mapping(target = "followingsCount", expression = "java(user.getFollowings()!= null ? (int) user.getFollowings().stream().filter(e -> e.isConfirmed()).count():0)")
+    @Mapping(target = "followingCount", expression = "java(user.getFollowings()!= null ? (int) user.getFollowings().stream().filter(e -> e.isConfirmed()).count():0)")
     @Mapping(target = "canEdit", constant = "false")
     PrivateProfileDto userToPrivateProfileDto(AppUser user, boolean following, boolean hasFollowingRequest);
 
@@ -44,7 +44,7 @@ public interface UserMapper {
     @Mapping(source = "user.userProfile.instagramUsername", target = "instagramUsername")
     @Mapping(source = "user.userProfile.websiteUrl", target = "websiteUrl")
     @Mapping(target = "followersCount", expression = "java(user.getFollowers()!= null ? (int) user.getFollowers().stream().filter(e -> e.isConfirmed()).count():0)")
-    @Mapping(target = "followingsCount", expression = "java(user.getFollowings()!= null ? (int) user.getFollowings().stream().filter(e -> e.isConfirmed()).count():0)")
+    @Mapping(target = "followingCount", expression = "java(user.getFollowings()!= null ? (int) user.getFollowings().stream().filter(e -> e.isConfirmed()).count():0)")
     PublicProfileDto userToPublicProfileDto(AppUser user, boolean following, boolean hasFollowingRequest, boolean canEdit);
 
     @Mapping(target = "name", source = "userProfile.name")

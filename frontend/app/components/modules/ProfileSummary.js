@@ -1,11 +1,12 @@
 import moment from 'moment';
 import Button from "../elements/Button/Button";
 import ProfileApi from "../../api/profile.api";
-import useProfile from "../../hooks/useProfile";
 import Link from "next/link";
 import {toast} from "react-toastify";
 import useAuth from "../../hooks/useAuth";
 import {useRouter} from "next/router";
+import useActiveProfile from "../../hooks/useActiveProfile";
+import {useState} from "react";
 
 const EditMyProfileButton = () => {
     return (<Link href="/edit/profile">
@@ -14,8 +15,8 @@ const EditMyProfileButton = () => {
     </Link>)
 }
 
-const UnfollowButton = ({username}) => {
-    const {reload} = useProfile(username);
+const UnfollowButton = () => {
+    const {username, reload} = useActiveProfile();
 
     const unfollowUser = () => {
         ProfileApi.unfollowUser({username}).then((res) => {
@@ -30,10 +31,10 @@ const UnfollowButton = ({username}) => {
     </Button>)
 }
 
-const FollowButton = ({username}) => {
+const FollowButton = () => {
     const router = useRouter();
     const {authenticated} = useAuth();
-    const {reload} = useProfile(username);
+    const {username, reload} = useActiveProfile();
 
     const followUser = () => {
         if (!authenticated) {
@@ -48,13 +49,32 @@ const FollowButton = ({username}) => {
         })
     }
 
-    return (<Button appearance="secondary" onClick={followUser}>
+    return (<Button appearance="secondary" size="lg" onClick={followUser}>
         Follow
     </Button>)
 }
 
-function ProfileSummary({username}) {
-    const {profile} = useProfile(username);
+function CancelFollowRequestButton() {
+    const {username, reload} = useActiveProfile();
+    const [buttonText, setButtonText] = useState("Pending");
+
+    const unfollowUser = () => {
+        ProfileApi.unfollowUser({username}).then((res) => {
+            toast(res.data.message, {type: "success"})
+            reload();
+        })
+    }
+
+    return (<Button
+        className="bg-yellow-500 hover:bg-red-500 text-white text-center rounded transition whitespace-nowrap px-5 py-2 w-24"
+        onClick={unfollowUser} onMouseEnter={() => setButtonText("Cancel")}
+        onMouseLeave={() => setButtonText("Pending")}>
+        {buttonText}
+    </Button>)
+}
+
+function ProfileSummary({type}) {
+    const {profile} = useActiveProfile();
 
     if (!profile) {
         return (
@@ -72,6 +92,12 @@ function ProfileSummary({username}) {
             </div>
         )
     }
+
+    const selfProfile = profile.canEdit;
+    const following = !selfProfile && profile.following;
+    const notFollowing = !selfProfile && !profile.following && !profile.hasFollowingRequest;
+    const hasFollowingRequest = !selfProfile && profile.hasFollowingRequest;
+
     return (
         <div className="px-4 bg-gray-100">
             <div
@@ -89,24 +115,34 @@ function ProfileSummary({username}) {
                         <div className="text-gray-400 text-sm">Joined {moment(profile.registrationDate).fromNow()}</div>
                     </div>
                     <div className="flex flex-col justify-between items-center sm:items-end gap-5 sm:gap-1">
-                        {profile.canEdit ? <EditMyProfileButton/> : (profile.following ?
-                            <UnfollowButton username={username}/> : <FollowButton username={username}/>)}
+                        {selfProfile && <EditMyProfileButton/>}
+                        {following && <UnfollowButton/>}
+                        {hasFollowingRequest && <CancelFollowRequestButton/>}
+                        {notFollowing && <FollowButton/>}
                         <div className="flex gap-4">
                             <div
-                                className="flex flex-col items-center border-b-2 border-transparent hover:border-yellow-400 cursor-pointer select-none">
+                                className={`flex flex-col items-center border-b-2 ${type === "activities" ? "border-yellow-400" : "border-transparent"} hover:border-yellow-400 cursor-pointer select-none`}>
                                 <div className="text-xs text-gray-400">ACTIVITIES</div>
                                 <div className="text-gray-600">{profile.activityCount}</div>
                             </div>
-                            <div
-                                className="flex flex-col items-center border-b-2 border-transparent hover:border-yellow-400 cursor-pointer select-none">
-                                <div className="text-xs text-gray-400">FOLLOWERS</div>
-                                <div className="text-gray-600">{profile.followersCount}</div>
-                            </div>
-                            <div
-                                className="flex flex-col items-center border-b-2 border-transparent hover:border-yellow-400 cursor-pointer select-none">
-                                <div className="text-xs text-gray-400">FOLLOWING</div>
-                                <div className="text-gray-600">{profile.followingsCount}</div>
-                            </div>
+                            <Link href={`/@${profile.username}/followers`}>
+                                <a>
+                                    <div
+                                        className={`flex flex-col items-center border-b-2 ${type === "followers" ? "border-yellow-400" : "border-transparent"} hover:border-yellow-400 cursor-pointer select-none`}>
+                                        <div className="text-xs text-gray-400">FOLLOWERS</div>
+                                        <div className="text-gray-600">{profile.followersCount}</div>
+                                    </div>
+                                </a>
+                            </Link>
+                            <Link href={`/@${profile.username}/following`}>
+                                <a>
+                                    <div
+                                        className={`flex flex-col items-center border-b-2 ${type === "following" ? "border-yellow-400" : "border-transparent"} hover:border-yellow-400 cursor-pointer select-none`}>
+                                        <div className="text-xs text-gray-400">FOLLOWING</div>
+                                        <div className="text-gray-600">{profile.followingCount}</div>
+                                    </div>
+                                </a>
+                            </Link>
                         </div>
                     </div>
                 </div>

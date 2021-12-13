@@ -19,7 +19,7 @@ function NavbarItem({href, children, ...props}) {
 }
 
 function MobileNavbar({closeMenu}) {
-    const {authenticated, logout} = useAuth();
+    const {authenticated, user, logout} = useAuth();
     return <div className="flex flex-col lg:hidden fixed right-0 top-0 h-full w-3/4 bg-white z-50 shadow">
         <div className="flex justify-end" onClick={closeMenu}><span className="p-2 select-none cursor-pointer">X</span>
         </div>
@@ -39,7 +39,8 @@ function MobileNavbar({closeMenu}) {
             <div className="text-left text-lg">
                 <ul>
                     <NavbarItem href="/profile" onClick={closeMenu}>Profile</NavbarItem>
-                    <NavbarItem href="/follower-requests" onClick={closeMenu}>Follower Requests</NavbarItem>
+                    <NavbarItem href={`/@${user.username}/followers/requests`} onClick={closeMenu}>Follower
+                        Requests</NavbarItem>
                     <NavbarItem href="/edit/profile" onClick={closeMenu}>Settings</NavbarItem>
                     <NavbarItem href="" onClick={logout}>Logout</NavbarItem>
                 </ul>

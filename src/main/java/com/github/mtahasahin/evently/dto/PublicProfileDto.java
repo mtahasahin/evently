@@ -22,7 +22,7 @@ public class PublicProfileDto implements Profile {
     private String instagramUsername;
     private String githubUsername;
     private int followersCount;
-    private int followingsCount;
+    private int followingCount;
     private boolean following;
     private boolean hasFollowingRequest;
     private boolean canEdit;

@@ -130,8 +130,9 @@ const SearchPage = () => {
                 </div>)
             }
             {searchData.category === "users" && (searchData.results.length > 0 ?
-                <div className="w-full grid gap-6 grid-cols-12">{searchData.results.map(e => <UserSearchResult user={e}
-                                                                                                   key={e.id}/>)}</div> :
+                <div className="w-full grid gap-6 grid-cols-12">
+                    {searchData.results.map(e => <UserSearchResult user={e} key={e.id}/>)}
+                </div> :
                 <div className="h-96 bg-gray-100 flex flex-col justify-center items-center">
                     <img src="/no-item-found.png" alt="no user found" width="150px"/>
                     <div className="text-gray-500 text-sm mt-8">We couldn't find any users for this filters</div>

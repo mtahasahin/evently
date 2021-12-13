@@ -14,7 +14,7 @@ const NavbarItem = ({children, href, ...props}) => {
 }
 
 const NavbarDropdown = () => {
-    const {logout} = useAuth();
+    const {user, logout} = useAuth();
     const [menuOpened, setMenuOpened] = useState(false);
     const toggleMenu = () => setMenuOpened(open => !open);
     const closeMenu = () => setMenuOpened(false);
@@ -29,8 +29,7 @@ const NavbarDropdown = () => {
                     className="absolute bg-white shadow py-2 mt-4 right-0 left-auto whitespace-nowrap rounded text-sm z-10">
                     <ul>
                         <NavbarItem href="/profile">Profile</NavbarItem>
-                        <NavbarItem href="/follower-requests">Follower
-                            Requests</NavbarItem>
+                        <NavbarItem href={`/@${user.username}/followers/requests`}>Follower Requests</NavbarItem>
                         <NavbarItem href="/edit/profile">Settings</NavbarItem>
                         <NavbarItem href="" onClick={logout}>Logout</NavbarItem>
                     </ul>
