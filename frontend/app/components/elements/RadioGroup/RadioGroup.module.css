@@ -1,47 +1,45 @@
 .styled {
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    border-radius: 18px;
-    transition: all 50ms;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 18px;
+  transition: all 50ms;
 }
 
 .checked {
-    @apply
-    bg-yellow-500
-    border-none
+  @apply bg-yellow-500
+    border-none;
 }
 
 .not-checked {
-    @apply
-    bg-white
-    border
+  @apply bg-white
+    border;
 }
 
 .hidden {
-    border: 0;
-    clip: rect(0 0 0 0);
-    clip-path: inset(50%);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    white-space: nowrap;
-    width: 1px;
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  white-space: nowrap;
+  width: 1px;
 }
 
 .container {
-    display: inline-block;
-    vertical-align: middle;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .icon {
-    position: absolute;
-    content: "";
-    display: block;
-    width: 6px;
-    height: 6px;
-    background-color: #ffffff;
-    margin: 6px;
-    border-radius: 6px;
+  position: absolute;
+  content: '';
+  display: block;
+  width: 6px;
+  height: 6px;
+  background-color: #ffffff;
+  margin: 6px;
+  border-radius: 6px;
 }

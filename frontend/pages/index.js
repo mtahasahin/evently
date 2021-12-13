@@ -1,11 +1,11 @@
-import React from "react";
-import DefaultLayout from "../app/components/layouts/DefaultLayout/DefaultLayout";
-import HomePage from "../app/components/templates/HomePage";
+import React from 'react';
+import DefaultLayout from '../app/components/layouts/DefaultLayout/DefaultLayout';
+import HomePage from '../app/components/templates/HomePage';
 
-const Index = () => (
-    <HomePage/>
-)
+const Index = function () {
+  return <HomePage />;
+};
 
-Index.getLayout = page => DefaultLayout(page)
+Index.getLayout = (page) => DefaultLayout(page);
 
-export default Index
+export default Index;
