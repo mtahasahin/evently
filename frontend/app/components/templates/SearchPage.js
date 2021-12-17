@@ -31,7 +31,7 @@ const EventSearchResult = ({ event }) => {
               {moment(event.startDate)
                 .tz(event.timezone)
                 .tz(timezone)
-                .format('MMM DD, H:m A')}
+                .format('MMM DD, h:mm A')}
             </div>
             <div className="ml-6">
               <span className="text-gray-400">From</span>{' '}
@@ -50,13 +50,15 @@ const EventSearchResult = ({ event }) => {
         <div className="hidden md:flex">
           <Link href={`/event/${event.slug}`}>
             <a>
-              <Image
-                className="rounded"
-                src={event.imagePath}
-                alt="event"
-                width={16 * 10}
-                height={9 * 10}
-              />
+              {event.imagePath && (
+                <Image
+                  className="rounded"
+                  src={event.imagePath}
+                  alt="event"
+                  width={16 * 10}
+                  height={9 * 10}
+                />
+              )}
             </a>
           </Link>
         </div>

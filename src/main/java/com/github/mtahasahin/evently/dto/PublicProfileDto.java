@@ -23,6 +23,7 @@ public class PublicProfileDto implements Profile {
     private String githubUsername;
     private int followersCount;
     private int followingCount;
+    private int activityCount;
     private boolean following;
     private boolean hasFollowingRequest;
     private boolean canEdit;

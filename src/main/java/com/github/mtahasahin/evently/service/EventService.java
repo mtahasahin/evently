@@ -1,7 +1,10 @@
 package com.github.mtahasahin.evently.service;
 
+import com.github.mtahasahin.evently.domainevent.EventCreatedEvent;
+import com.github.mtahasahin.evently.domainevent.EventDeletedEvent;
 import com.github.mtahasahin.evently.dto.CreateUpdateEventForm;
 import com.github.mtahasahin.evently.dto.DisplayEventDto;
+import com.github.mtahasahin.evently.dto.EventDto;
 import com.github.mtahasahin.evently.dto.EventQuestionDto;
 import com.github.mtahasahin.evently.entity.AppUser;
 import com.github.mtahasahin.evently.entity.Event;
@@ -13,8 +16,10 @@ import com.github.mtahasahin.evently.mapper.EventQuestionMapper;
 import com.github.mtahasahin.evently.repository.EventRepository;
 import com.github.mtahasahin.evently.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,12 +32,14 @@ public class EventService {
     private final EventMapper eventMapper;
     private final EventQuestionMapper eventQuestionMapper;
     private final S3BucketStorageService s3BucketStorageService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     private final HashMap<String, String> extensions = new HashMap<>() {{
         put("image/png", ".png");
         put("image/jpeg", ".jpeg");
     }};
 
+    @Transactional
     public DisplayEventDto createEvent(Long userId, CreateUpdateEventForm form) {
         AppUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("user not found: " + userId));
@@ -41,6 +48,7 @@ public class EventService {
         return saveEvent(form, user, event);
     }
 
+    @Transactional
     public DisplayEventDto updateEvent(Long userId, String eventSlug, CreateUpdateEventForm form) {
         AppUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("user not found: " + userId));
@@ -69,6 +77,15 @@ public class EventService {
         return eventMapper.eventToDisplayEventDto(event, user);
     }
 
+    public List<EventDto> getEventsById(List<Long> eventIds) {
+        List<Event> events = eventRepository.findAllById(eventIds);
+
+        return events
+                .stream()
+                .map(eventMapper::eventToEventDto)
+                .collect(Collectors.toList());
+    }
+
     private DisplayEventDto saveEvent(CreateUpdateEventForm form, AppUser user, Event event) {
         eventMapper.toEvent(form, user, event);
         if (form.getImage() != null) {
@@ -79,7 +96,11 @@ public class EventService {
         if (!event.isLimited()) {
             event.setAttendeeLimit(0);
         }
+        var isNewEvent = event.getId() == null;
         eventRepository.saveAndFlush(event);
+        if (isNewEvent && event.getVisibility() == EventVisibility.PUBLIC) {
+            applicationEventPublisher.publishEvent(new EventCreatedEvent(user.getId(), event.getId()));
+        }
         return eventMapper.eventToDisplayEventDto(event, user);
     }
 
@@ -139,6 +160,7 @@ public class EventService {
     }
 
 
+    @Transactional
     public void removeEvent(long userId, String eventSlug) {
         AppUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("user not found: " + userId));
@@ -150,5 +172,6 @@ public class EventService {
             throw new AccessDeniedException("forbidden");
         }
         eventRepository.delete(event);
+        applicationEventPublisher.publishEvent(new EventDeletedEvent(userId, event.getId()));
     }
 }

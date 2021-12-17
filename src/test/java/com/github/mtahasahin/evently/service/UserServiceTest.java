@@ -8,6 +8,7 @@ import com.github.mtahasahin.evently.entity.UserProfile;
 import com.github.mtahasahin.evently.exception.CustomValidationException;
 import com.github.mtahasahin.evently.exception.UserNotFoundException;
 import com.github.mtahasahin.evently.mapper.UserMapper;
+import com.github.mtahasahin.evently.repository.ActivityRepository;
 import com.github.mtahasahin.evently.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +34,9 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private ActivityRepository activityRepository;
 
     @Test
     void whenUserExists_shouldReturnUser() {
@@ -87,8 +91,9 @@ class UserServiceTest {
 
         Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(requestingUser));
         Mockito.when(userRepository.findByUsername("user-2")).thenReturn(Optional.of(requestedUser));
+        Mockito.when(activityRepository.countByUserId(1L)).thenReturn(3);
 
-        Mockito.when(userMapper.userToPrivateProfileDto(requestedUser, false, false)).thenReturn(profileDto);
+        Mockito.when(userMapper.userToPrivateProfileDto(requestedUser, false, false, 3)).thenReturn(profileDto);
 
         var result = userService.getProfile(1, "user-2");
 
@@ -130,8 +135,9 @@ class UserServiceTest {
 
         Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(requestingUser));
         Mockito.when(userRepository.findByUsername("user-2")).thenReturn(Optional.of(requestedUser));
+        Mockito.when(activityRepository.countByUserId(1L)).thenReturn(2);
 
-        Mockito.when(userMapper.userToPublicProfileDto(requestedUser, true, false,false)).thenReturn(profileDto);
+        Mockito.when(userMapper.userToPublicProfileDto(requestedUser, true, false, false, 2)).thenReturn(profileDto);
 
         var result = userService.getProfile(1, "user-2");
 
@@ -171,8 +177,9 @@ class UserServiceTest {
 
         Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(requestingUser));
         Mockito.when(userRepository.findByUsername("user-2")).thenReturn(Optional.of(requestedUser));
+        Mockito.when(activityRepository.countByUserId(1L)).thenReturn(1);
 
-        Mockito.when(userMapper.userToPublicProfileDto(requestedUser, false, false,false)).thenReturn(profileDto);
+        Mockito.when(userMapper.userToPublicProfileDto(requestedUser, false, false, false, 1)).thenReturn(profileDto);
 
         var result = userService.getProfile(1, "user-2");
 

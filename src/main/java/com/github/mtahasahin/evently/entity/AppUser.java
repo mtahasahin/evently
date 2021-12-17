@@ -1,9 +1,12 @@
 package com.github.mtahasahin.evently.entity;
 
+import com.github.mtahasahin.evently.domainevent.UserFollowedEvent;
+import com.github.mtahasahin.evently.domainevent.UserUnfollowedEvent;
 import lombok.*;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+import org.springframework.data.domain.DomainEvents;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -19,6 +22,9 @@ import java.util.*;
 @AllArgsConstructor
 @Table(name = "USERS")
 public class AppUser extends Auditable implements UserDetails, CredentialsContainer {
+
+    @Transient
+    private List<Object> domainEvents = new ArrayList<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -81,6 +87,10 @@ public class AppUser extends Auditable implements UserDetails, CredentialsContai
         FollowerFollowing followerFollowing = new FollowerFollowing(user, this, this.userProfile.isProfilePublic());
         followers.add(followerFollowing);
         user.followings.add(followerFollowing);
+
+        if (this.userProfile.isProfilePublic()) {
+            domainEvents.add(new UserFollowedEvent(user.getId(), this.getId()));
+        }
     }
 
     public void removeFollower(AppUser user) {
@@ -89,6 +99,7 @@ public class AppUser extends Auditable implements UserDetails, CredentialsContai
 
             if (followerFollowing.getFollowing().equals(this) &&
                     followerFollowing.getFollower().equals(user)) {
+                domainEvents.add(new UserUnfollowedEvent(followerFollowing.getFollower().getId(), followerFollowing.getFollowing().getId()));
                 iterator.remove();
                 followerFollowing.getFollower().getFollowings().remove(followerFollowing);
                 followerFollowing.setFollower(null);
@@ -103,6 +114,11 @@ public class AppUser extends Auditable implements UserDetails, CredentialsContai
 
     public boolean hasFollowingRequest(AppUser user) {
         return followings.stream().anyMatch(e -> e.getFollowing() == user && !e.isConfirmed());
+    }
+
+    @DomainEvents
+    public List<Object> getDomainEvents() {
+        return domainEvents;
     }
 
     @Override

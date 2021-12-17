@@ -2,6 +2,7 @@ package com.github.mtahasahin.evently.mapper;
 
 import com.github.mtahasahin.evently.dto.CreateUpdateEventForm;
 import com.github.mtahasahin.evently.dto.DisplayEventDto;
+import com.github.mtahasahin.evently.dto.EventDto;
 import com.github.mtahasahin.evently.dto.EventQuestionDto;
 import com.github.mtahasahin.evently.entity.AppUser;
 import com.github.mtahasahin.evently.entity.Event;
@@ -43,13 +44,14 @@ public abstract class EventMapper {
         if (event.getId() == null) {
             event.setKey(RandomStringGenerator.generate(6));
         }
-        if(form.getEventLocationType() == EventLocationType.ONLINE){
+        if (form.getEventLocationType() == EventLocationType.ONLINE) {
             event.setLocation(null);
-        }
-        else if(form.getEventLocationType() == EventLocationType.IN_PERSON){
+        } else if (form.getEventLocationType() == EventLocationType.IN_PERSON) {
             event.setEventUrl(null);
         }
     }
+
+    public abstract EventDto eventToEventDto(Event entity);
 
     @Mapping(target = "waitingApproval", ignore = true)
     @Mapping(target = "organizing", ignore = true)

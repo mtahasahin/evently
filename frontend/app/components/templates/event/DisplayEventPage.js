@@ -7,14 +7,16 @@ const DisplayEventPage = () => {
   return (
     <div>
       <div className="lg:w-4/5">
-        <Image
-          src={event.imagePath}
-          alt="Event image"
-          width="100%"
-          height="55%"
-          layout="responsive"
-          objectFit="contain"
-        />
+        {event.imagePath && (
+          <Image
+            src={event.imagePath}
+            alt="Event image"
+            width="100%"
+            height="55%"
+            layout="responsive"
+            objectFit="contain"
+          />
+        )}
       </div>
       <div
         className="ck-content"

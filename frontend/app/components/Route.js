@@ -12,7 +12,7 @@ export default function Route({ protectedRoutes, publicRoutes, children }) {
     if (!loading && !authenticated && pathIsProtected) {
       router.push('/login');
     } else if (!loading && authenticated && pathIsPublic) {
-      router.push('/profile');
+      router.push('/feed');
     }
   }, [router, loading, authenticated, pathIsProtected, pathIsPublic]);
 

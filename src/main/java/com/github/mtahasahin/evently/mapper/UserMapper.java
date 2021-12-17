@@ -13,6 +13,7 @@ public interface UserMapper {
     @Mapping(source = "userProfile", target = "profile")
     UserDto userToUserDto(AppUser user);
 
+    @Mapping(target = "domainEvents", ignore = true)
     @Mapping(target = "organizedEvents", ignore = true)
     @Mapping(target = "eventApplications", ignore = true)
     @Mapping(target = "password", ignore = true)
@@ -31,7 +32,7 @@ public interface UserMapper {
     @Mapping(target = "followersCount", expression = "java(user.getFollowers()!= null ? (int) user.getFollowers().stream().filter(e -> e.isConfirmed()).count():0)")
     @Mapping(target = "followingCount", expression = "java(user.getFollowings()!= null ? (int) user.getFollowings().stream().filter(e -> e.isConfirmed()).count():0)")
     @Mapping(target = "canEdit", constant = "false")
-    PrivateProfileDto userToPrivateProfileDto(AppUser user, boolean following, boolean hasFollowingRequest);
+    PrivateProfileDto userToPrivateProfileDto(AppUser user, boolean following, boolean hasFollowingRequest, int activityCount);
 
     @Mapping(source = "user.userProfile.name", target = "name")
     @Mapping(source = "user.userProfile.about", target = "about")
@@ -45,7 +46,7 @@ public interface UserMapper {
     @Mapping(source = "user.userProfile.websiteUrl", target = "websiteUrl")
     @Mapping(target = "followersCount", expression = "java(user.getFollowers()!= null ? (int) user.getFollowers().stream().filter(e -> e.isConfirmed()).count():0)")
     @Mapping(target = "followingCount", expression = "java(user.getFollowings()!= null ? (int) user.getFollowings().stream().filter(e -> e.isConfirmed()).count():0)")
-    PublicProfileDto userToPublicProfileDto(AppUser user, boolean following, boolean hasFollowingRequest, boolean canEdit);
+    PublicProfileDto userToPublicProfileDto(AppUser user, boolean following, boolean hasFollowingRequest, boolean canEdit, int activityCount);
 
     @Mapping(target = "name", source = "userProfile.name")
     @Mapping(target = "avatar", ignore = true)

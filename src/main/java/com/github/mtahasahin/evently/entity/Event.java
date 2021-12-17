@@ -1,17 +1,21 @@
 package com.github.mtahasahin.evently.entity;
 
+import com.github.mtahasahin.evently.domainevent.GoingEventEvent;
 import com.github.mtahasahin.evently.enums.EventLocationType;
 import com.github.mtahasahin.evently.enums.EventVisibility;
 import com.github.mtahasahin.evently.validator.Language;
 import com.github.mtahasahin.evently.validator.TimeZone;
 import lombok.*;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.*;
+import org.springframework.data.domain.DomainEvents;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -27,6 +31,10 @@ import java.util.Set;
         @Index(columnList = "ORGANIZER_ID"),
 })
 public class Event extends Auditable {
+
+    @Transient
+    private List<Object> domainEvents = new ArrayList<>();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -77,6 +85,10 @@ public class Event extends Auditable {
         eventApplications.add(eventApplication);
         eventApplication.setEvent(this);
         eventApplication.getApplicant().getEventApplications().add(eventApplication);
+
+        if (eventApplication.isConfirmed()) {
+            domainEvents.add(new GoingEventEvent(eventApplication.getApplicant().getId(), this.getId()));
+        }
     }
 
     @NotNull
@@ -90,8 +102,14 @@ public class Event extends Auditable {
         eventQuestions.add(eventQuestion);
         eventQuestion.setEvent(this);
     }
+
     private String key;
     private boolean limited;
     private int attendeeLimit;
     private boolean approvalRequired;
+
+    @DomainEvents
+    public List<Object> getDomainEvents() {
+        return domainEvents;
+    }
 }

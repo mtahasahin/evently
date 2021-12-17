@@ -37,13 +37,15 @@ const EventSearchResult = ({ event, ...props }) => {
       <a {...props}>
         <div className="flex gap-2 rounded items-center p-1.5 hover:bg-gray-50">
           <div className="w-1/3">
-            <Image
-              src={event.imagePath}
-              height="55%"
-              width="100%"
-              alt="event"
-              className="rounded"
-            />
+            {event.imagePath && (
+              <Image
+                src={event.imagePath}
+                height="55%"
+                width="100%"
+                alt="event"
+                className="rounded"
+              />
+            )}
           </div>
           <div className="w-2/3">
             <span className="text-sm break-normal">{event.name}</span>

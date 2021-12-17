@@ -1,5 +1,7 @@
 package com.github.mtahasahin.evently.service;
 
+import com.github.mtahasahin.evently.domainevent.EventApplicationCancelledEvent;
+import com.github.mtahasahin.evently.domainevent.GoingEventEvent;
 import com.github.mtahasahin.evently.dto.DisplayEventDto;
 import com.github.mtahasahin.evently.dto.EventApplicationDto;
 import com.github.mtahasahin.evently.dto.EventQuestionAnswerDto;
@@ -16,11 +18,13 @@ import com.github.mtahasahin.evently.repository.EventRepository;
 import com.github.mtahasahin.evently.repository.UserRepository;
 import com.github.mtahasahin.evently.wrapper.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -39,6 +43,7 @@ public class EventApplicationService {
     private final EventQuestionMapper eventQuestionMapper;
     private final EventQuestionAnswerMapper eventQuestionAnswerMapper;
     private final UserMapper userMapper;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
 
     public EventApplicationDto getAnswer(Long userId, String eventSlug, Long applicationId) {
@@ -105,6 +110,7 @@ public class EventApplicationService {
         return eventMapper.eventToDisplayEventDto(event, user);
     }
 
+    @Transactional
     public void confirmApplication(Long userId, String slug, Long applicationId) {
         var event = eventRepository.findBySlug(slug).orElseThrow(() -> new EventNotFoundException(slug));
         var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(String.valueOf(userId)));
@@ -122,6 +128,7 @@ public class EventApplicationService {
         application.setConfirmed(true);
 
         eventApplicationRepository.saveAndFlush(application);
+        applicationEventPublisher.publishEvent(new GoingEventEvent(application.getApplicant().getId(), event.getId()));
     }
 
     private EventApplicationDto convertToDto(EventApplication application) {
@@ -143,11 +150,13 @@ public class EventApplicationService {
         return dto;
     }
 
+    @Transactional
     public void cancelEventApplication(long userId, String eventSlug) {
         var event = eventRepository.findBySlug(eventSlug).orElseThrow(() -> new EventNotFoundException(eventSlug));
         var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(String.valueOf(userId)));
         var eventApplication = event.getEventApplications().stream().filter(e -> e.getApplicant().equals(user)).findFirst().orElseThrow(() -> new EventApplicationNotFoundException("User has not applied to the event"));
         event.getEventApplications().remove(eventApplication);
         eventRepository.saveAndFlush(event);
+        applicationEventPublisher.publishEvent(new EventApplicationCancelledEvent(userId, event.getId()));
     }
 }

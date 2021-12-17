@@ -11,6 +11,7 @@ import javax.validation.constraints.Pattern;
 @Data
 @Builder
 public class UserDto {
+    private Long id;
     @Email
     private String email;
     @NotBlank

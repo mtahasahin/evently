@@ -142,16 +142,20 @@ function ProfileSummary({ type }) {
             {hasFollowingRequest && <CancelFollowRequestButton />}
             {notFollowing && <FollowButton />}
             <div className="flex gap-4">
-              <div
-                className={`flex flex-col items-center border-b-2 ${
-                  type === 'activities'
-                    ? 'border-yellow-400'
-                    : 'border-transparent'
-                } hover:border-yellow-400 cursor-pointer select-none`}
-              >
-                <div className="text-xs text-gray-400">ACTIVITIES</div>
-                <div className="text-gray-600">{profile.activityCount}</div>
-              </div>
+              <Link href={`/@${profile.username}`}>
+                <a>
+                  <div
+                    className={`flex flex-col items-center border-b-2 ${
+                      type === 'activities'
+                        ? 'border-yellow-400'
+                        : 'border-transparent'
+                    } hover:border-yellow-400 cursor-pointer select-none`}
+                  >
+                    <div className="text-xs text-gray-400">ACTIVITIES</div>
+                    <div className="text-gray-600">{profile.activityCount}</div>
+                  </div>
+                </a>
+              </Link>
               <Link href={`/@${profile.username}/followers`}>
                 <a>
                   <div

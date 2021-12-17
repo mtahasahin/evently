@@ -7,7 +7,7 @@ import useActiveProfile from '../../hooks/useActiveProfile';
 
 const SocialLink = ({ children }) => {
   return (
-    <li className="border-b border-gray-200 py-1.5 text-gray-600 hover:text-blue-600 cursor-pointer flex gap-x-1 items-center">
+    <li className="border-b border-gray-200 py-3 text-gray-500 hover:text-blue-600 cursor-pointer flex gap-x-2 items-center">
       {children}
     </li>
   );
@@ -25,7 +25,7 @@ const ProfileSocial = () => {
     exists && (
       <div className="flex flex-col gap-y-1.5">
         <h6 className="text-xs text-gray-700">ELSEWHERE</h6>
-        <ul className="flex flex-col">
+        <ul className="flex flex-col text-sm text-gray-400">
           {profile.websiteUrl && (
             <a href={profile.websiteUrl}>
               <SocialLink url={profile.websiteUrl}>
