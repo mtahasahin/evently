@@ -64,12 +64,12 @@ public class EventService {
 
     public DisplayEventDto getEvent(Long userId, String eventSlug, String key) {
         AppUser user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("user not found: " + userId));
+                .orElse(null);
 
         Event event = eventRepository.findBySlug(eventSlug)
                 .orElseThrow(() -> new EventNotFoundException("event not found: " + eventSlug));
 
-        if (!(user.isOrganizing(event) || user.isJoiningEvent(event)) && event.getVisibility() == EventVisibility.ONLY_WITH_LINK && !Objects.equals(event.getKey(), key)) {
+        if (!(user != null && (user.isOrganizing(event) || user.isJoiningEvent(event))) && event.getVisibility() == EventVisibility.ONLY_WITH_LINK && !Objects.equals(event.getKey(), key)) {
             throw new EventNotFoundException("event not found: " + eventSlug);
         }
 

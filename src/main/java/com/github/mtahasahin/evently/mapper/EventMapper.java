@@ -66,9 +66,16 @@ public abstract class EventMapper {
         if(entity.getAttendeeLimit() == 0){
             dto.setAttendeeLimit(null);
         }
-        dto.setOrganizing(user.isOrganizing(entity));
-        dto.setWaitingApproval(user.isWaitingForApprovalForEvent(entity));
-        dto.setJoined(user.isJoiningEvent(entity));
+        if(user != null){
+            dto.setOrganizing(user.isOrganizing(entity));
+            dto.setWaitingApproval(user.isWaitingForApprovalForEvent(entity));
+            dto.setJoined(user.isJoiningEvent(entity));
+        }
+        else{
+            dto.setOrganizing(false);
+            dto.setWaitingApproval(false);
+            dto.setJoined(false);
+        }
         dto.setEventStarted(ZonedDateTime.of(dto.getStartDate(), ZoneId.of(dto.getTimezone())).toLocalDateTime().isBefore(LocalDateTime.now()));
         dto.setEventEnded(ZonedDateTime.of(dto.getEndDate(), ZoneId.of(dto.getTimezone())).toLocalDateTime().isBefore(LocalDateTime.now()));
 

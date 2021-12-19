@@ -79,23 +79,23 @@ const EventTime = () => {
   const endDate = moment(event.endDate).tz(event.timezone);
   const eventStartEndSameDay = startDate.isSame(endDate, 'day');
 
-  const displayStartDate = user.profile.timezone
-    ? startDate.clone().tz(user.profile.timezone).format('dddd, MMMM Do YYYY')
+  const userTimezone = user?.profile?.timezone;
+
+  const displayStartDate = userTimezone
+    ? startDate.clone().tz(userTimezone).format('dddd, MMMM Do YYYY')
     : startDate.format('dddd, MMMM Do YYYY');
-  const displayStartTime = user.profile.timezone
-    ? startDate.clone().tz(user.profile.timezone).format('HH:mm')
+  const displayStartTime = userTimezone
+    ? startDate.clone().tz(userTimezone).format('HH:mm')
     : startDate.format('HH:mm');
 
-  const displayEndDate = user.profile.timezone
-    ? endDate.clone().tz(user.profile.timezone).format('dddd, MMMM Do YYYY')
+  const displayEndDate = userTimezone
+    ? endDate.clone().tz(userTimezone).format('dddd, MMMM Do YYYY')
     : endDate.format('dddd, MMMM Do YYYY');
-  const displayEndTime = user.profile.timezone
-    ? endDate.clone().tz(user.profile.timezone).format('HH:mm')
+  const displayEndTime = userTimezone
+    ? endDate.clone().tz(userTimezone).format('HH:mm')
     : endDate.format('HH:mm');
 
-  const timezone = user.profile.timezone
-    ? user.profile.timezone
-    : event.timezone;
+  const timezone = userTimezone ? userTimezone : event.timezone;
 
   return eventStartEndSameDay ? (
     <>
@@ -289,6 +289,7 @@ const EventRSVP = () => {
 
 function EventAttendButton() {
   const { event, reload } = useActiveEvent();
+  const { authenticated } = useAuth();
   const router = useRouter();
   const isOrganizing = event.organizing;
   const isJoined = event.joined;
@@ -297,6 +298,10 @@ function EventAttendButton() {
   const isFull = event.userCount >= event.attendeeLimit;
 
   const attendEvent = () => {
+    if (!authenticated) {
+      router.push('/login');
+      return;
+    }
     if (event.questions.length === 0) {
       EventApi.applyToEvent({
         slug: event.slug,

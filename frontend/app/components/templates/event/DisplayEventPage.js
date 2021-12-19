@@ -18,8 +18,9 @@ const DisplayEventPage = () => {
           />
         )}
       </div>
+      <div className="text-2xl mt-2">Description</div>
       <div
-        className="ck-content"
+        className="ck-content mt-4 lg:w-4/5"
         dangerouslySetInnerHTML={{
           __html: event.description,
         }}

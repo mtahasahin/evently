@@ -10,6 +10,7 @@ import com.github.mtahasahin.evently.wrapper.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
@@ -22,6 +23,7 @@ import java.util.Set;
 @Validated
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/event")
+@PreAuthorize("isAuthenticated()")
 @RestController
 public class EventController {
     private final EventService eventService;
@@ -34,8 +36,9 @@ public class EventController {
     }
 
     @GetMapping(path = "/{slug}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> getEvent(Authentication authentication, @PathVariable String slug, @RequestParam(required = false) String key) {
-        return new ResponseEntity<>(eventService.getEvent(Long.parseLong(authentication.getName()), slug, key), HttpStatus.OK);
+        return new ResponseEntity<>(eventService.getEvent(authentication != null ? Long.parseLong(authentication.getName()) : 0, slug, key), HttpStatus.OK);
     }
 
     @PostMapping(consumes = "multipart/form-data")
