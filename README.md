@@ -20,7 +20,7 @@
     Evently is a hobby project I've been developing to improve my web developer skills and learn new technologies. It is built with Spring Boot and Nextjs. It is heavily inspired by <a href="https://kommunity.com">Kommunity</a>.
     <br />
     <br />
-    <a href="https://evently-deneme.vercel.app">View Demo</a>
+    <a href="https://evently-demo.vercel.app">View Demo</a>
     ·
     <a href="https://github.com/mtahasahin/evently/issues">Report Bug</a>
     ·
