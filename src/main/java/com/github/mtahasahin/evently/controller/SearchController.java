@@ -31,5 +31,9 @@ public class SearchController {
         return ResponseEntity.ok(searchService.searchUser(request));
     }
 
+    @PostMapping("/events/getRandomEvents")
+    public ResponseEntity getRandomEvents() {
+        return ResponseEntity.ok(searchService.getRandomEvents());
+    }
 
 }
