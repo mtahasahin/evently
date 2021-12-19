@@ -20,7 +20,7 @@ function HeroSection() {
               hybrid or in-person events.
             </div>
             <div className="flex gap-x-4">
-              <Link href="/event/create">
+              <Link href="/create/event">
                 <a className="py-2 sm:py-4 px-5 sm:px-7 bg-white hover:bg-gray-200 transition rounded max-w-full font-bold text-blue-900 sm:text-lg">
                   Organize an Event
                 </a>

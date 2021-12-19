@@ -34,6 +34,9 @@ function MyApp({ Component, pageProps }) {
           '/event/[slug]/questions/edit',
           '/event/[slug]/questions/answers',
           '/event/[slug]/questions/answers/all',
+          '/event/[slug]/questions/answers/[applicationId]',
+          '/[username]/followers/requests',
+          '/feed',
         ]}
         publicRoutes={['/login', '/signup', '/']}
       >
