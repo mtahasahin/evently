@@ -15,14 +15,18 @@ const RegisterPage = () => {
     signup(data.name, data.email, data.password)
       .catch((e) => {
         e.response.data.errors?.forEach((e) => {
-          setError(e.field, e.message);
+          setError(e.field, { type: 'value', message: e.message });
         });
         setErrorMessage(e.response.data.message);
       })
       .finally(() => setLoading(false));
   };
-  const { register, handleSubmit, setError } = useForm();
-
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm();
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-2">
@@ -31,7 +35,9 @@ const RegisterPage = () => {
           name={'name'}
           placeholder="Your Name"
           required
+          error={errors.name}
         />
+        <ErrorMessage messages={errors.name?.message} />
       </div>
       <div className="mb-2">
         <TextInput
@@ -40,7 +46,9 @@ const RegisterPage = () => {
           placeholder="Email Address"
           type="email"
           required
+          error={errors.email}
         />
+        <ErrorMessage messages={errors.email?.message} />
       </div>
       <div className="mb-2">
         <TextInput
@@ -49,7 +57,9 @@ const RegisterPage = () => {
           placeholder="Password"
           type="password"
           required
+          error={errors.password}
         />
+        <ErrorMessage messages={errors.password?.message} />
       </div>
       <ErrorMessage messages={errorMessage} />
       <Button type="submit" appearance="secondary" size="xl" fullWidth>
