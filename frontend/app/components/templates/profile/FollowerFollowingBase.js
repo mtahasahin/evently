@@ -46,7 +46,7 @@ const User = ({ user, type }) => {
           <div className="flex flex-col items-center">
             <div className="mb-2">
               <Image
-                src={`https://i.pravatar.cc/300?${user.id}`}
+                src={user.avatar}
                 alt="avatar"
                 height="75px"
                 width="75px"

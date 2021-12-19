@@ -7,7 +7,8 @@
   @apply items-center
     max-w-lg
     mx-auto
-    min-w-[500px];
+    min-w-[500px]
+    rounded;
 }
 
 .overlay {
@@ -17,5 +18,5 @@
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  @apply flex items-center;
+  @apply flex items-center z-[100];
 }

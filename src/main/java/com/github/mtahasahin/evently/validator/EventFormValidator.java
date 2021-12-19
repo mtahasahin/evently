@@ -2,6 +2,7 @@ package com.github.mtahasahin.evently.validator;
 
 import com.github.mtahasahin.evently.dto.CreateUpdateEventForm;
 import com.github.mtahasahin.evently.enums.EventLocationType;
+import com.github.mtahasahin.evently.util.ImageUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -9,13 +10,10 @@ import org.springframework.validation.Validator;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.List;
 
 
 @Component
 public class EventFormValidator implements Validator {
-    private static final List<String> contentTypes = Arrays.asList("image/png", "image/jpeg");
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -45,8 +43,9 @@ public class EventFormValidator implements Validator {
             errors.rejectValue("startDate", null, "can not be before current date");
         }
 
-        if (eventForm.getImage() != null && !contentTypes.contains(eventForm.getImage().getContentType())) {
-            errors.rejectValue("image", null, "is not a valid image.");
+        var imageValidationResult = ImageUtils.isValid(eventForm.getImage(), 5 * 1024 * 1024, 675, 1200);
+        if(!imageValidationResult.getData()){
+            errors.rejectValue("image", null, imageValidationResult.getMessage());
         }
     }
 }

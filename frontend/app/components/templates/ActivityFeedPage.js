@@ -58,14 +58,14 @@ const Activity = function ({ activity }) {
     <div className="flex py-4 gap-3">
       <div className="h-[80px]">
         <Image
-          src="https://i.pravatar.cc/300"
+          src={activity.user.avatar}
           height="50"
           width="50"
           className="rounded-full"
         />
       </div>
       <div className="flex flex-col w-full">
-        <div className="h-[56px] text-sm text-gray-500 pt-1">
+        <div className="text-sm text-gray-500 pt-1 mb-2">
           <div>
             <Link href={`/@${activity.user.username}`}>
               <a className="font-semibold text-black hover:underline">

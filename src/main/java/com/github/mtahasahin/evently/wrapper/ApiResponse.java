@@ -1,5 +1,6 @@
 package com.github.mtahasahin.evently.wrapper;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
@@ -35,6 +36,11 @@ public class ApiResponse<T> implements Serializable {
 
     public static <T> ApiResponse<T> Error(T data, String messages, List<ApiSubError> errors) {
         return new ApiResponse<>(data, ResponseResultType.ERROR, messages, errors);
+    }
+
+    @JsonIgnore
+    public boolean isSuccess() {
+        return this.resultType == ResponseResultType.SUCCESS;
     }
 
     @Data

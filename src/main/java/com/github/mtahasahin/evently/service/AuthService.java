@@ -8,7 +8,9 @@ import com.github.mtahasahin.evently.exception.CustomValidationException;
 import com.github.mtahasahin.evently.exception.EmailAlreadyTakenException;
 import com.github.mtahasahin.evently.repository.AuthorityRepository;
 import com.github.mtahasahin.evently.repository.UserRepository;
+import com.github.mtahasahin.evently.util.ImageUtils;
 import com.github.mtahasahin.evently.util.JwtTokenProvider;
+import com.github.mtahasahin.evently.util.RandomStringGenerator;
 import com.github.mtahasahin.evently.wrapper.ApiResponse;
 import com.ibm.icu.util.ULocale;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Optional;
@@ -35,6 +39,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;
+    private final S3BucketStorageService s3BucketStorageService;
 
     public AuthenticationResponse login(final LoginRequest loginRequest) {
         return authenticate(loginRequest.getEmail(), loginRequest.getPassword());
@@ -59,12 +64,20 @@ public class AuthService {
         userEntity.setUsername(createUniqueUsername(registerRequest.getName()));
         userEntity.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         userEntity.setEmail(registerRequest.getEmail());
+        userRepository.save(userEntity);
 
         var userProfileEntity = new UserProfile();
         userProfileEntity.setName(registerRequest.getName());
         userProfileEntity.setProfilePublic(true);
         userProfileEntity.setRegistrationDate(LocalDateTime.now());
         userProfileEntity.setUser(userEntity);
+        var s3Key = userEntity.getId() + "/" + "profile-" + RandomStringGenerator.generate(5) + ".jpg";
+        try {
+            var url = s3BucketStorageService.uploadFile(s3Key, new ByteArrayInputStream(ImageUtils.toByteArray(ImageUtils.createProfileImageFromName(registerRequest.getName(), 300), "jpg")));
+            userProfileEntity.setAvatar(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         var language = new ULocale(registerRequest.getLanguage()).getLanguage();
         userProfileEntity.setLanguage(language.isEmpty() ? "en" : language);

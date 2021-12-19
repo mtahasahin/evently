@@ -16,7 +16,7 @@ const UserSearchResult = ({ user, ...props }) => {
         <div className="flex rounded items-center p-1.5 hover:bg-gray-50">
           <div className="w-8 h-8 mr-2">
             <Image
-              src="https://i.pravatar.cc/300?1"
+              src={user.profile.avatar}
               height="100%"
               width="100%"
               objectFit="contain"

@@ -14,6 +14,7 @@ public class PrivateProfileDto implements Profile {
     private LocalDateTime registrationDate;
     private boolean profilePublic;
     private String about;
+    private String avatar;
     private int followersCount;
     private int followingCount;
     private boolean following;

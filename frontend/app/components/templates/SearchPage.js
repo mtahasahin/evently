@@ -74,7 +74,7 @@ const UserSearchResult = ({ user }) => {
         <a className="text-xl font-semibold hover:underline">
           <div className="flex flex-col items-center">
             <Image
-              src="https://i.pravatar.cc/300"
+              src={user.profile.avatar}
               alt="avatar"
               className="rounded-full"
               width="75px"

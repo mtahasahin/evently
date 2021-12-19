@@ -17,4 +17,5 @@ public class UserSearchDto {
 class ProfileSearchDto {
     private String name;
     private String about;
+    private String avatar;
 }

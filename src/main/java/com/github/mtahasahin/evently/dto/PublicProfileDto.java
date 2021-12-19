@@ -16,6 +16,7 @@ public class PublicProfileDto implements Profile {
     private LocalDateTime registrationDate;
     private boolean profilePublic;
     private String about;
+    private String avatar;
     private String websiteUrl;
     private String twitterUsername;
     private String facebookUsername;

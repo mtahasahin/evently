@@ -119,7 +119,7 @@ function ProfileSummary({ type }) {
     <div className="px-4 bg-gray-100">
       <div className="mx-auto flex flex-col sm:flex-row items-center sm:items-stretch justify-center sm:justify-between w-full xl:w-4/5 max-w-screen-xl flex-nowrap py-8 gap-7">
         <Image
-          src="https://i.pravatar.cc/300"
+          src={profile.avatar}
           alt="profile picture"
           height="120px"
           width="120px"

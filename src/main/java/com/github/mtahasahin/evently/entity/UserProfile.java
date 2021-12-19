@@ -2,6 +2,7 @@ package com.github.mtahasahin.evently.entity;
 
 import lombok.*;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -33,6 +34,8 @@ public class UserProfile extends Auditable {
     @FullTextField(analyzer = "english")
     @Column(length = 500)
     private String about;
+    @KeywordField
+    private String avatar;
     private String websiteUrl;
     private String twitterUsername;
     private String facebookUsername;

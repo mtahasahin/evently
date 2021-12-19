@@ -15,6 +15,8 @@ import com.github.mtahasahin.evently.mapper.UserMapper;
 import com.github.mtahasahin.evently.repository.ActivityRepository;
 import com.github.mtahasahin.evently.repository.FollowerFollowingRepository;
 import com.github.mtahasahin.evently.repository.UserRepository;
+import com.github.mtahasahin.evently.util.ImageUtils;
+import com.github.mtahasahin.evently.util.RandomStringGenerator;
 import com.github.mtahasahin.evently.wrapper.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -23,10 +25,20 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.github.mtahasahin.evently.util.ImageUtils.extensions;
+import static com.github.mtahasahin.evently.util.ImageUtils.resizeImage;
 
 
 @Service
@@ -37,6 +49,7 @@ public class UserService {
     private final ActivityRepository activityRepository;
     private final UserMapper userMapper;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final S3BucketStorageService s3BucketStorageService;
 
     private static final int PAGE_SIZE = 8;
 
@@ -254,4 +267,27 @@ public class UserService {
         return requestedUserEntity.getUserProfile().isProfilePublic() ||
                 (requestingUserEntity != null && (requestedUserEntity == requestingUserEntity || requestingUserEntity.isFollowing(requestedUserEntity)));
     }
+
+    public ApiResponse updateAvatar(long userId, String username, MultipartFile avatar) {
+        AppUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + userId));
+
+        if(!Objects.equals(user.getUsername(), username)) {
+            throw new CustomAccessDeniedException();
+        }
+
+        try {
+            var imageExtension = ImageUtils.getExtension(avatar);
+            var s3Key = user.getId() + "/" + "profile-" + RandomStringGenerator.generate(5) + imageExtension;
+            var image = ImageIO.read(avatar.getInputStream());
+            var resizedImage = resizeImage(image, 300, 300);
+            var url = s3BucketStorageService.uploadFile(s3Key, new ByteArrayInputStream(ImageUtils.toByteArray(resizedImage,imageExtension.substring(1))));
+            user.getUserProfile().setAvatar(url);
+            userRepository.saveAndFlush(user);
+            return ApiResponse.Success(null, "Avatar updated");
+        } catch (IOException exception) {
+            return ApiResponse.Error("Avatar couldn't be updated");
+        }
+    }
+
 }

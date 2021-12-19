@@ -18,7 +18,7 @@ public interface UserRepository extends JpaRepository<AppUser, Long> {
 
     Optional<AppUser> findByEmail(String email);
 
-    @Query("SELECT new com.github.mtahasahin.evently.dto.UserLightDto(u.id, u.username, u.userProfile.name) FROM AppUser u WHERE u.id in :ids")
+    @Query("SELECT new com.github.mtahasahin.evently.dto.UserLightDto(u.id, u.username, u.userProfile.name, u.userProfile.avatar) FROM AppUser u WHERE u.id in :ids")
     List<UserLightDto> findAllById(List<Long> ids);
 
     @EntityGraph(

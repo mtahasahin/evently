@@ -4,12 +4,14 @@ import com.github.mtahasahin.evently.dto.UserDto;
 import com.github.mtahasahin.evently.dto.UserLightDto;
 import com.github.mtahasahin.evently.interfaces.Profile;
 import com.github.mtahasahin.evently.service.UserService;
+import com.github.mtahasahin.evently.util.ImageUtils;
 import com.github.mtahasahin.evently.wrapper.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -34,6 +36,15 @@ public class ProfileController {
     @PutMapping
     public ApiResponse<UserDto> updateProfile(Authentication authentication, @Valid @RequestBody UserDto userDto) {
         return ApiResponse.Success(userService.updateUser(Long.parseLong(authentication.getName()), userDto), "Profile updated.");
+    }
+
+    @PostMapping(consumes = "multipart/form-data", path = "/{username}/avatar")
+    public ApiResponse updateAvatar(Authentication authentication, @Valid @RequestParam("avatar") MultipartFile avatar, @PathVariable String username){
+        var validationResult = ImageUtils.isValid(avatar, 3 * 1024 * 1024, 128, 128);
+        if(!validationResult.isSuccess()){
+            return validationResult;
+        }
+        return userService.updateAvatar(Long.parseLong(authentication.getName()), username, avatar);
     }
 
     @PreAuthorize("permitAll()")

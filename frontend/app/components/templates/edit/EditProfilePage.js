@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import FormGroup from '../../elements/FormGroup/FormGroup';
 import TextInput from '../../elements/TextInput/TextInput';
@@ -14,6 +14,12 @@ import languages from '../../../constants/language-list';
 import { toast } from 'react-toastify';
 import ErrorMessage from '../../elements/ErrorMessage/ErrorMessage';
 import useAuth from '../../../hooks/useAuth';
+import Image from 'next/image';
+import { FaPlusCircle } from 'react-icons/fa';
+import Modal from '../../elements/Modal/Modal';
+import { IoIosClose } from 'react-icons/io';
+import AvatarPicker from '../../elements/AvatarPicker/AvatarPicker';
+import AxiosInstance from '../../../api/AxiosInstance';
 
 const timezoneOptions = timezones.map((e) => ({ name: e, value: e }));
 const languageOptions = languages.map((e) => ({
@@ -25,8 +31,66 @@ const profileVisibilityOptions = [
   { name: 'Private', value: 'false' },
 ];
 
+const ChangeAvatar = () => {
+  const { user, reload } = useAuth();
+  const [modalOpen, setModalOpen] = useState(false);
+  const { handleSubmit, control, register, errors, setValue } = useForm();
+  const onSubmit = (data) => {
+    const formData = new FormData();
+    formData.append('avatar', data.avatar);
+    AxiosInstance.post(`/profile/${user.username}/avatar`, formData).then(
+      (res) => {
+        reload();
+        setModalOpen(false);
+      }
+    );
+  };
+
+  if (!user) return null;
+  return (
+    <div className="relative group max-h-[50px]">
+      <Image
+        src={user.profile.avatar}
+        width={50}
+        height={50}
+        className="rounded-full"
+        alt="avatar"
+      />
+      <Modal isOpen={modalOpen} setOpen={setModalOpen}>
+        <form className="rounded">
+          <div className="p-4 border-b flex justify-between rounded">
+            <div className="text-lg font-bold">Change Avatar</div>
+            <IoIosClose
+              size="1.5rem"
+              className="cursor-pointer"
+              onClick={() => setModalOpen(false)}
+            />
+          </div>
+          <div className="p-4 border-b bg-gray-50 flex flex-col">
+            <div className="flex justify-center mt-4">
+              <AvatarPicker
+                control={control}
+                name="avatar"
+                displayedImage={user.profile.avatar}
+                saveImage={handleSubmit(onSubmit)}
+              />
+            </div>
+          </div>
+        </form>
+      </Modal>
+      <button
+        type="button"
+        onClick={() => setModalOpen(true)}
+        className="absolute flex justify-center items-center top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/[0.5] h-[70px] w-[70px] hidden group-hover:flex cursor-pointer border border-gray-400 border-dashed"
+      >
+        <FaPlusCircle size="1rem" color="black" />
+      </button>
+    </div>
+  );
+};
+
 const EditProfilePage = () => {
-  const { reload } = useAuth();
+  const { reload, user } = useAuth();
 
   useEffect(() => {
     EditApi.getProfile().then((res) => {
@@ -69,7 +133,10 @@ const EditProfilePage = () => {
       <div className="shadow-sm mb-6">
         <div className="bg-white rounded-t h-full w-full py-10 px-8">
           <div className="flex flex-col">
-            <h1 className="text-3xl font-bold mb-8">Basic Information</h1>
+            <div className="flex justify-between">
+              <h1 className="text-3xl font-bold mb-8">Basic Information</h1>
+              <ChangeAvatar />
+            </div>
             <FormGroup>
               <div className="w-full">
                 <TextInput

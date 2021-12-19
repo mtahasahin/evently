@@ -24,6 +24,7 @@ public class ProfileDto {
     @NotBlank
     private String language;
     private String about;
+    private String avatar;
     private String websiteUrl;
     private String twitterUsername;
     private String facebookUsername;

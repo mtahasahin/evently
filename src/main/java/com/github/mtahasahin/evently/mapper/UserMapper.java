@@ -27,6 +27,7 @@ public interface UserMapper {
 
     @Mapping(source = "user.userProfile.name", target = "name")
     @Mapping(source = "user.userProfile.about", target = "about")
+    @Mapping(source = "user.userProfile.avatar", target = "avatar")
     @Mapping(source = "user.userProfile.profilePublic", target = "profilePublic")
     @Mapping(source = "user.userProfile.registrationDate", target = "registrationDate")
     @Mapping(target = "followersCount", expression = "java(user.getFollowers()!= null ? (int) user.getFollowers().stream().filter(e -> e.isConfirmed()).count():0)")
@@ -36,6 +37,7 @@ public interface UserMapper {
 
     @Mapping(source = "user.userProfile.name", target = "name")
     @Mapping(source = "user.userProfile.about", target = "about")
+    @Mapping(source = "user.userProfile.avatar", target = "avatar")
     @Mapping(source = "user.userProfile.profilePublic", target = "profilePublic")
     @Mapping(source = "user.userProfile.dateOfBirth", target = "dateOfBirth")
     @Mapping(source = "user.userProfile.registrationDate", target = "registrationDate")

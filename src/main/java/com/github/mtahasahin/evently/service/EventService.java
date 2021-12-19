@@ -21,8 +21,12 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.github.mtahasahin.evently.util.ImageUtils.extensions;
 
 @RequiredArgsConstructor
 @Service
@@ -33,11 +37,6 @@ public class EventService {
     private final EventQuestionMapper eventQuestionMapper;
     private final S3BucketStorageService s3BucketStorageService;
     private final ApplicationEventPublisher applicationEventPublisher;
-
-    private final HashMap<String, String> extensions = new HashMap<>() {{
-        put("image/png", ".png");
-        put("image/jpeg", ".jpeg");
-    }};
 
     @Transactional
     public DisplayEventDto createEvent(Long userId, CreateUpdateEventForm form) {
@@ -90,7 +89,12 @@ public class EventService {
         eventMapper.toEvent(form, user, event);
         if (form.getImage() != null) {
             var s3Key = user.getId() + "/" + event.getSlug() + "/" + "highlight-image" + extensions.get(form.getImage().getContentType());
-            var url = s3BucketStorageService.uploadFile(s3Key, form.getImage());
+            String url = null;
+            try {
+                url = s3BucketStorageService.uploadFile(s3Key, new ByteArrayInputStream(form.getImage().getBytes()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             event.setImagePath(url);
         }
         if (!event.isLimited()) {

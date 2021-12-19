@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,17 +34,15 @@ public class S3BucketStorageService {
      * Upload file into AWS S3
      *
      * @param keyName
-     * @param file
+     * @param input
      * @return String
      */
-    public String uploadFile(String keyName, MultipartFile file) {
+    public String uploadFile(String keyName, ByteArrayInputStream input) {
         try {
             ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentLength(file.getSize());
-            amazonS3Client.putObject(bucketName, keyName, file.getInputStream(), metadata);
+            metadata.setContentLength(input.available());
+            amazonS3Client.putObject(bucketName, keyName, input, metadata);
             return amazonS3Client.getUrl(bucketName, keyName).toExternalForm();
-        } catch (IOException ioe) {
-            logger.error("IOException: " + ioe.getMessage());
         } catch (AmazonServiceException serviceException) {
             logger.info("AmazonServiceException: " + serviceException.getMessage());
             throw serviceException;
@@ -51,7 +50,6 @@ public class S3BucketStorageService {
             logger.info("AmazonClientException Message: " + clientException.getMessage());
             throw clientException;
         }
-        return "File not uploaded: " + keyName;
     }
 
 
