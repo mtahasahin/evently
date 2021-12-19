@@ -42,6 +42,9 @@ const ActivityList = ({ activities }) => {
       {activities.map((e) => (
         <Activity key={e.id} activity={e} />
       ))}
+      {activities.length === 0 && (
+        <div className="text-center text-gray-400">No activities yet.</div>
+      )}
     </div>
   );
 };

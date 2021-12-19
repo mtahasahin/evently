@@ -114,6 +114,11 @@ const ActivityFeedPage = () => {
         {activities.map((activity) => (
           <Activity activity={activity} key={activity.id} />
         ))}
+        {activities.length === 0 ? (
+          <div className="p-4 bg-gray-100 text-center text-gray-500">
+            You have no activity yet. Follow some people to see their activity.
+          </div>
+        ) : null}
       </div>
     </div>
   );
