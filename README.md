@@ -65,7 +65,7 @@ Project is not yet completed. You might get 404 for some pages.
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Evently Screen Shot][product-screenshot]](https://evently-deneme.vercel.app)
+![Evently Screen Shot][product-screenshot]
 
 Evently is an event platform to organize events and communicate with your members within one place.
 
