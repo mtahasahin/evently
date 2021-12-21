@@ -1,4 +1,4 @@
-package com.github.mtahasahin.evently.config;
+package com.github.mtahasahin.evently.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

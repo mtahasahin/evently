@@ -30,6 +30,7 @@ public abstract class EventMapper {
     @Mapping(target = "imagePath", ignore = true)
     @Mapping(target = "key", ignore = true)
     @Mapping(target = "organizer", source = "organizer")
+    @Mapping(target = "name", source = "form.name")
     public abstract void toEvent(CreateUpdateEventForm form, AppUser organizer, @MappingTarget Event entity);
 
     @BeforeMapping
@@ -59,6 +60,7 @@ public abstract class EventMapper {
     @Mapping(target = "eventStarted", ignore = true)
     @Mapping(target = "eventEnded", ignore = true)
     @Mapping(source = "entity.eventQuestions", target = "questions")
+    @Mapping(source = "entity.name", target = "name")
     public abstract DisplayEventDto eventToDisplayEventDto(Event entity, AppUser user);
 
     @AfterMapping

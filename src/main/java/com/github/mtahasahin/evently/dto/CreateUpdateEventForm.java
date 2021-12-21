@@ -31,6 +31,7 @@ public class CreateUpdateEventForm {
     @NotBlank
     @TimeZone
     private String timezone;
+    @NotNull
     private MultipartFile image;
     @NotBlank
     private String description;

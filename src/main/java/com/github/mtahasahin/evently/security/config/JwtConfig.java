@@ -1,4 +1,4 @@
-package com.github.mtahasahin.evently.config;
+package com.github.mtahasahin.evently.security.config;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

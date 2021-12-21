@@ -100,7 +100,14 @@ const FormContent = ({
           ></Select>
         </FormGroup>
         <FormGroup>
-          <Dropzone name="image" control={control} displayedImage={prevImage} />
+          <div className="flex flex-col space-y-1 w-full">
+            <Dropzone
+              name="image"
+              control={control}
+              displayedImage={prevImage}
+            />
+            <ErrorMessage messages={errors.image?.message} />
+          </div>
         </FormGroup>
         <FormGroup>
           <div className="flex flex-col space-y-2 w-full">

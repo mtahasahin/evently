@@ -67,6 +67,15 @@ const useAuth = () => {
         user: null,
       }));
     },
+    oauthlogin: (token) => {
+      setAccessToken(token);
+      setValue({
+        authenticated: true,
+        user: null,
+        loading: false,
+        accessToken: token,
+      });
+    },
   };
 };
 

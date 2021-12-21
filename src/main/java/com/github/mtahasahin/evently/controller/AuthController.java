@@ -1,7 +1,7 @@
 package com.github.mtahasahin.evently.controller;
 
 import com.github.mtahasahin.evently.dto.*;
-import com.github.mtahasahin.evently.service.AuthService;
+import com.github.mtahasahin.evently.security.AuthService;
 import com.github.mtahasahin.evently.wrapper.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;

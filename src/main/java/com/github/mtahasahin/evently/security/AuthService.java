@@ -1,13 +1,15 @@
-package com.github.mtahasahin.evently.service;
+package com.github.mtahasahin.evently.security;
 
 import com.github.mtahasahin.evently.dto.*;
 import com.github.mtahasahin.evently.entity.AppUser;
 import com.github.mtahasahin.evently.entity.Authority;
 import com.github.mtahasahin.evently.entity.UserProfile;
+import com.github.mtahasahin.evently.enums.AuthProvider;
 import com.github.mtahasahin.evently.exception.CustomValidationException;
 import com.github.mtahasahin.evently.exception.EmailAlreadyTakenException;
 import com.github.mtahasahin.evently.repository.AuthorityRepository;
 import com.github.mtahasahin.evently.repository.UserRepository;
+import com.github.mtahasahin.evently.service.S3BucketStorageService;
 import com.github.mtahasahin.evently.util.ImageUtils;
 import com.github.mtahasahin.evently.util.JwtTokenProvider;
 import com.github.mtahasahin.evently.util.RandomStringGenerator;
@@ -30,6 +32,8 @@ import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.github.mtahasahin.evently.util.UsernameUtils.createUniqueUsername;
 
 @Service
 @RequiredArgsConstructor
@@ -61,9 +65,10 @@ public class AuthService {
         }
 
         var userEntity = new AppUser();
-        userEntity.setUsername(createUniqueUsername(registerRequest.getName()));
+        userEntity.setUsername(createUniqueUsername(registerRequest.getName(), userRepository));
         userEntity.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         userEntity.setEmail(registerRequest.getEmail());
+        userEntity.setProvider(AuthProvider.local);
         userRepository.save(userEntity);
 
         var userProfileEntity = new UserProfile();
@@ -119,15 +124,4 @@ public class AuthService {
         return new AuthenticationResponse(accessToken, refreshToken);
     }
 
-    private String createUniqueUsername(@NotEmpty String name) {
-        String username;
-        do {
-            username = name.trim().toLowerCase(Locale.ROOT).replaceAll(" ", "");
-            int count = userRepository.countAppUsersByUsernameContaining(username);
-            if (count > 0)
-                username += "-" + count;
-        }
-        while (userRepository.findByUsername(username).isPresent());
-        return username;
-    }
 }

@@ -1,6 +1,6 @@
 package com.github.mtahasahin.evently.util;
 
-import com.github.mtahasahin.evently.config.JwtConfig;
+import com.github.mtahasahin.evently.security.config.JwtConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;

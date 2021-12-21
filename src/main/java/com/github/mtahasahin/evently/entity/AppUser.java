@@ -2,6 +2,7 @@ package com.github.mtahasahin.evently.entity;
 
 import com.github.mtahasahin.evently.domainevent.UserFollowedEvent;
 import com.github.mtahasahin.evently.domainevent.UserUnfollowedEvent;
+import com.github.mtahasahin.evently.enums.AuthProvider;
 import lombok.*;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
@@ -9,6 +10,7 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmb
 import org.springframework.data.domain.DomainEvents;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import javax.persistence.*;
 import java.util.*;
@@ -21,7 +23,7 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "USERS")
-public class AppUser extends Auditable implements UserDetails, CredentialsContainer {
+public class AppUser extends Auditable implements UserDetails, OAuth2User, CredentialsContainer {
 
     @Transient
     private List<Object> domainEvents = new ArrayList<>();
@@ -46,6 +48,9 @@ public class AppUser extends Auditable implements UserDetails, CredentialsContai
             joinColumns = @JoinColumn(name = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "AUTHORITY_ID"))
     private Set<Authority> authorities = new HashSet<>();
+
+    @Transient
+    private Map<String, Object> attributes;
 
     @IndexedEmbedded
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
@@ -82,6 +87,11 @@ public class AppUser extends Auditable implements UserDetails, CredentialsContai
             orphanRemoval = true
     )
     private List<FollowerFollowing> followings = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
+
+    private String providerId;
 
     public void addFollower(AppUser user) {
         FollowerFollowing followerFollowing = new FollowerFollowing(user, this, this.userProfile.isProfilePublic());
@@ -144,5 +154,20 @@ public class AppUser extends Auditable implements UserDetails, CredentialsContai
     @Override
     public void eraseCredentials() {
         password = null;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    public AppUser returnWithAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
+        return this;
+    }
+
+    @Override
+    public String getName() {
+        return String.valueOf(id);
     }
 }

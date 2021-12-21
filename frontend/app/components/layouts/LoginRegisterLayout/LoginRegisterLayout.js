@@ -3,6 +3,8 @@ import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
 import Link from 'next/link';
 import Image from 'next/image';
+import { FACEBOOK_AUTH_URL, GOOGLE_AUTH_URL } from '../../../constants/oauth';
+import { useRouter } from 'next/router';
 
 const LoginRegisterLayout = ({
   backgroundImageUrl,
@@ -10,6 +12,9 @@ const LoginRegisterLayout = ({
   footerContent,
   children,
 }) => {
+  const {
+    query: { error },
+  } = useRouter();
   return (
     <div className="flex flex-col sm:flex-row h-screen min-h-full">
       <div
@@ -31,19 +36,28 @@ const LoginRegisterLayout = ({
           <div className="pb-2">Join and Explore Evently</div>
           <div className="w-5/6 sm:w-8/12 md:w-6/12 lg:w-5/12 xl:x-4/12">
             <div className="flex flex-col gap-y-2">
-              <div className="bg-blue-500 text-white text-center font-semibold py-3 rounded relative cursor-pointer select-none">
-                <div className="bg-white absolute left-1.5 top-1.5 bottom-1.5 rounded">
-                  <FcGoogle size="2.2em" />
-                </div>
-                Connect with Google
-              </div>
-              <div className="bg-blue-700 text-white text-center font-semibold py-3 rounded relative cursor-pointer select-none">
-                <div className="absolute left-1.5 top-1.5 bottom-1.5 rounded">
-                  <FaFacebook size="2.2em" />
-                </div>
-                Connect with Facebook
-              </div>
+              <Link href={GOOGLE_AUTH_URL}>
+                <a className="bg-blue-500 text-white text-center font-semibold py-3 rounded relative cursor-pointer select-none">
+                  <div className="bg-white absolute left-1.5 top-1.5 bottom-1.5 rounded">
+                    <FcGoogle size="2.2em" />
+                  </div>
+                  Connect with Google
+                </a>
+              </Link>
+              <Link href={FACEBOOK_AUTH_URL}>
+                <a className="bg-blue-700 text-white text-center font-semibold py-3 rounded relative cursor-pointer select-none">
+                  <div className="absolute left-1.5 top-1.5 bottom-1.5 rounded">
+                    <FaFacebook size="2.2em" />
+                  </div>
+                  Connect with Facebook
+                </a>
+              </Link>
             </div>
+            {error && (
+              <div className="text-red-500 text-center mt-2">
+                Error: {error}
+              </div>
+            )}
             <div className="text-sm text-gray-400 py-4 text-center">OR</div>
             {children}
           </div>

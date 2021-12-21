@@ -38,7 +38,7 @@ function MyApp({ Component, pageProps }) {
           '/[username]/followers/requests',
           '/feed',
         ]}
-        publicRoutes={['/login', '/signup', '/']}
+        publicRoutes={['/login', '/signup', '/', '/oauth2/redirect']}
       >
         {getLayout(<Component {...pageProps} />)}
       </Route>
