@@ -111,9 +111,9 @@ coming soon
 
 ### Features
 
-- [ ] Social Logins
-    - [ ] Google
-    - [ ] Facebook
+- [X] Social Logins
+    - [X] Google
+    - [X] Facebook
 - [ ] Explore events page
 - [ ] Event attendees page
 - [ ] Forgot password page
