@@ -1,7 +1,7 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const OAUTH2_REDIRECT_URI =
-  process.env.NEXT_PUBLIC_API_URL + '/oauth2/redirect';
+  process.env.NEXT_PUBLIC_BASE_URL + '/oauth2/redirect';
 
 export const GOOGLE_AUTH_URL =
   API_BASE_URL + '/oauth2/authorize/google?redirect_uri=' + OAUTH2_REDIRECT_URI;
