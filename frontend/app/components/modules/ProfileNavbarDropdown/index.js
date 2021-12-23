@@ -6,7 +6,7 @@ import useOutsideAlerter from '../../../hooks/useOutsideAlerter';
 
 const NavbarItem = ({ children, href, ...props }) => {
   return (
-    <Link href={href}>
+    <Link href={href ?? '#'}>
       <a
         className="px-4 py-1.5 block hover:bg-gray-50 active:bg-yellow-400 active:text-white"
         {...props}
@@ -40,9 +40,7 @@ const NavbarDropdown = () => {
               Follower Requests
             </NavbarItem>
             <NavbarItem href="/edit/profile">Settings</NavbarItem>
-            <NavbarItem href="" onClick={logout}>
-              Logout
-            </NavbarItem>
+            <NavbarItem onClick={logout}>Logout</NavbarItem>
           </ul>
         </div>
       )}

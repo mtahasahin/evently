@@ -1,12 +1,12 @@
 import React from 'react';
 import HeroSection from '../modules/HeroSection';
-import ExploreEvents from '../modules/ExploreEvents';
+import ExploreEventsSection from '../modules/ExploreEventsSection';
 
 const HomePage = () => {
   return (
     <>
       <HeroSection />
-      <ExploreEvents />
+      <ExploreEventsSection />
     </>
   );
 };

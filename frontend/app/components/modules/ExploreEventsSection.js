@@ -58,10 +58,10 @@ const EventSearchResult = ({ event }) => {
   );
 };
 
-const ExploreEvents = () => {
+const ExploreEventsSection = () => {
   const [events, setEvents] = useState([]);
   useEffect(() => {
-    AxiosInstance.post('/search/events/getRandomEvents').then((res) => {
+    AxiosInstance.post('/upcoming/getRandomEvents').then((res) => {
       setEvents(res.data.data.events.slice(0, 4));
     });
   }, []);
@@ -79,4 +79,4 @@ const ExploreEvents = () => {
   );
 };
 
-export default ExploreEvents;
+export default ExploreEventsSection;

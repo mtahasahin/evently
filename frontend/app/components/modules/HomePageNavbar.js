@@ -34,11 +34,7 @@ const HomePageNavbar = () => {
         text={'Explore'}
         Icon={BiWorld}
       />
-      <HomePageNavbarItem
-        link="/edit/close-account"
-        text={'My Events'}
-        Icon={MdEvent}
-      />
+      <HomePageNavbarItem link="/my-events" text={'My Events'} Icon={MdEvent} />
     </nav>
   );
 };

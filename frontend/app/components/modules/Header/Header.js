@@ -35,7 +35,10 @@ function MobileNavbar({ closeMenu }) {
               <NavbarItem href="/" onClick={closeMenu}>
                 Home
               </NavbarItem>
-              <NavbarItem href="/events" onClick={closeMenu}>
+              <NavbarItem
+                href={authenticated ? '/explore/events' : '/events'}
+                onClick={closeMenu}
+              >
                 Events
               </NavbarItem>
               <NavbarItem href="/why-evently" onClick={closeMenu}>
@@ -143,7 +146,7 @@ function Header() {
                     Home
                   </a>
                 </Link>
-                <Link href="/events">
+                <Link href={authenticated ? '/explore/events' : '/events'}>
                   <a className="text-gray-500 hover:text-gray-800 whitespace-nowrap">
                     Events
                   </a>

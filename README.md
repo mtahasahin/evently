@@ -21,10 +21,6 @@
     <br />
     <br />
     <a href="https://evently-demo.vercel.app">View Demo</a>
-    ·
-    <a href="https://github.com/mtahasahin/evently/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/mtahasahin/evently/issues">Request Feature</a>
   </p>
 </div>
 
@@ -114,7 +110,7 @@ coming soon
 - [X] Social Logins
     - [X] Google
     - [X] Facebook
-- [ ] Explore events page
+- [X] Explore events page
 - [ ] Event attendees page
 - [ ] Forgot password page
 

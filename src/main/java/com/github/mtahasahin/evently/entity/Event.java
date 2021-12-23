@@ -6,6 +6,7 @@ import com.github.mtahasahin.evently.enums.EventVisibility;
 import com.github.mtahasahin.evently.validator.Language;
 import com.github.mtahasahin.evently.validator.TimeZone;
 import lombok.*;
+import org.hibernate.search.engine.backend.types.Sortable;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.*;
 import org.springframework.data.domain.DomainEvents;
 
@@ -59,7 +60,7 @@ public class Event extends Auditable {
     @KeywordField
     @TimeZone
     private String timezone;
-    @GenericField
+    @GenericField(sortable = Sortable.YES)
     @NotNull
     private LocalDateTime startDate;
     @GenericField
@@ -96,6 +97,7 @@ public class Event extends Auditable {
     private String location;
     private String eventUrl;
     @Language
+    @GenericField
     private String language;
 
     public void addEventQuestion(EventQuestion eventQuestion) {

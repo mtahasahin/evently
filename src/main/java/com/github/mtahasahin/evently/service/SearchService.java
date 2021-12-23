@@ -5,8 +5,9 @@ import com.github.mtahasahin.evently.dto.SearchRequest;
 import com.github.mtahasahin.evently.dto.UserSearchDto;
 import lombok.RequiredArgsConstructor;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.functionscore.RandomScoreFunctionBuilder;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -31,7 +32,7 @@ public class SearchService {
                         .must(boolQuery()
                                 .should(matchBoolPrefixQuery("name", query).fuzziness(1).minimumShouldMatch("-1")))
                         .must(QueryBuilders.termQuery("visibility", "PUBLIC")))
-                .withPageable(Pageable.ofSize(hitsPerPage))
+                .withPageable(PageRequest.of(0, hitsPerPage, Sort.by(Sort.Direction.ASC, "startDate")))
                 .build();
     }
 
@@ -74,19 +75,4 @@ public class SearchService {
         return Map.of("users", users);
     }
 
-    public Map<String, List> getRandomEvents() {
-        Query searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(boolQuery()
-                        .must(QueryBuilders.termQuery("visibility", "PUBLIC"))
-                        .must(functionScoreQuery(randomScoreFunction())))
-                .withPageable(Pageable.ofSize(10))
-                .build();
-        var searchHits = elasticsearchOperations.search(searchQuery, EventSearchDto.class);
-        var events = searchHits.getSearchHits().stream().map(SearchHit::getContent).collect(Collectors.toList());
-        return Map.of("events", events);
-    }
-
-    private RandomScoreFunctionBuilder randomScoreFunction(){
-        return new RandomScoreFunctionBuilder().setWeight(1);
-    }
 }

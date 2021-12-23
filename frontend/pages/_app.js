@@ -37,8 +37,9 @@ function MyApp({ Component, pageProps }) {
           '/event/[slug]/questions/answers/[applicationId]',
           '/[username]/followers/requests',
           '/feed',
+          '/explore/events',
         ]}
-        publicRoutes={['/login', '/signup', '/', '/oauth2/redirect']}
+        publicRoutes={['/login', '/signup', '/', '/oauth2/redirect', '/events']}
       >
         {getLayout(<Component {...pageProps} />)}
       </Route>
