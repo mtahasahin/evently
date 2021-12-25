@@ -6,6 +6,7 @@ import com.github.mtahasahin.evently.enums.EventVisibility;
 import com.github.mtahasahin.evently.validator.Language;
 import com.github.mtahasahin.evently.validator.TimeZone;
 import lombok.*;
+import org.hibernate.annotations.Formula;
 import org.hibernate.search.engine.backend.types.Sortable;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.*;
 import org.springframework.data.domain.DomainEvents;
@@ -75,12 +76,10 @@ public class Event extends Auditable {
     @GenericField
     private EventVisibility visibility;
 
-    @Transient
     @GenericField
     @IndexingDependency(derivedFrom = {@ObjectPath({@PropertyValue(propertyName = "eventApplications")})})
-    public int getAttendeeCount() {
-        return (int) eventApplications.stream().filter(EventApplication::isConfirmed).count() + 1;
-    }
+    @Formula("(SELECT COUNT(*) FROM EVENT_APPLICATIONS EA WHERE EA.EVENT_ID = ID AND EA.CONFIRMED = 'true')")
+    private int attendeeCount;
 
     public void addEventApplication(EventApplication eventApplication) {
         eventApplications.add(eventApplication);

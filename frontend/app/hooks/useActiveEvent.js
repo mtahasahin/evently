@@ -12,6 +12,7 @@ const useActiveEvent = () => {
 
   return {
     slug: slug,
+    key: key,
     event: data?.data,
     message: data?.message,
     isLoading: !error && !data,

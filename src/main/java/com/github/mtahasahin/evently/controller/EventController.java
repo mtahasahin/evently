@@ -57,6 +57,11 @@ public class EventController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping(path = "/{slug}/attendees")
+    public ResponseEntity<?> getEventAttendees(Authentication authentication, @PathVariable String slug, @RequestParam(required = false) String key, @RequestParam int page, @RequestParam int limit) {
+        return new ResponseEntity<>(eventService.getEventAttendees(authentication != null ? Long.parseLong(authentication.getName()) : 0, slug, key, page, limit), HttpStatus.OK);
+    }
+
     @PutMapping(path = "/{slug}/questions")
     public ResponseEntity<?> updateEventQuestions(Authentication authentication, @PathVariable String slug,@RequestBody ArrayList<@Valid EventQuestionDto> questions) {
         return new ResponseEntity<>(eventService.updateEventQuestions(Long.parseLong(authentication.getName()), slug, questions), HttpStatus.OK);

@@ -13,6 +13,9 @@ public interface UserMapper {
     @Mapping(source = "userProfile", target = "profile")
     UserDto userToUserDto(AppUser user);
 
+    @Mapping(target = "providerId", ignore = true)
+    @Mapping(target = "provider", ignore = true)
+    @Mapping(target = "attributes", ignore = true)
     @Mapping(target = "domainEvents", ignore = true)
     @Mapping(target = "organizedEvents", ignore = true)
     @Mapping(target = "eventApplications", ignore = true)
@@ -51,6 +54,6 @@ public interface UserMapper {
     PublicProfileDto userToPublicProfileDto(AppUser user, boolean following, boolean hasFollowingRequest, boolean canEdit, int activityCount);
 
     @Mapping(target = "name", source = "userProfile.name")
-    @Mapping(target = "avatar", ignore = true)
+    @Mapping(target = "avatar", source = "userProfile.avatar")
     UserLightDto userToUserLightDto(AppUser user);
 }

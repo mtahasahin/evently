@@ -111,7 +111,7 @@ coming soon
     - [X] Google
     - [X] Facebook
 - [X] Explore events page
-- [ ] Event attendees page
+- [X] Event attendees page
 - [ ] Forgot password page
 
 ### Other

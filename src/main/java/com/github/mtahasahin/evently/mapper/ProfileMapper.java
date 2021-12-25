@@ -12,6 +12,7 @@ public interface ProfileMapper {
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "registrationDate", ignore = true)
+    @Mapping(target = "avatar", ignore = true)
     void ProfileDtoToUserProfile(ProfileDto profileDto, @MappingTarget UserProfile profile);
 
     ProfileDto ProfileToProfileDto(UserProfile userProfile);
