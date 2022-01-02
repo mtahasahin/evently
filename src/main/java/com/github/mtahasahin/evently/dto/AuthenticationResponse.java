@@ -1,13 +1,12 @@
 package com.github.mtahasahin.evently.dto;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class AuthenticationResponse {
-    private final String accessToken;
-    private final String refreshToken;
+    private String accessToken;
+    private String refreshToken;
 }

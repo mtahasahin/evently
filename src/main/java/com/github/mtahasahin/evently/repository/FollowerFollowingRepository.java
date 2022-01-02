@@ -7,12 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Repository
 public interface FollowerFollowingRepository extends JpaRepository<FollowerFollowing, FollowerFollowingId> {
 
     @Query("select f.id.followingId from FollowerFollowing f where f.confirmed = true and f.id.followerId = ?1")
-    List<Long> getFriendsIds(Long userId);
+    List<UUID> getFriendsIds(UUID userId);
 
 }

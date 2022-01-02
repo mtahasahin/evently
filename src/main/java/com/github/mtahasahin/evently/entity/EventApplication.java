@@ -1,10 +1,12 @@
 package com.github.mtahasahin.evently.entity;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -17,8 +19,10 @@ import java.util.Set;
 })
 public class EventApplication extends Auditable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "ID")
+    private UUID id;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "EVENT_ID")

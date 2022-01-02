@@ -4,6 +4,7 @@ import com.github.mtahasahin.evently.domainevent.UserFollowedEvent;
 import com.github.mtahasahin.evently.domainevent.UserUnfollowedEvent;
 import com.github.mtahasahin.evently.enums.AuthProvider;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
@@ -29,9 +30,10 @@ public class AppUser extends Auditable implements UserDetails, OAuth2User, Crede
     private List<Object> domainEvents = new ArrayList<>();
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "ID")
-    private Long id;
+    private UUID id;
 
     @FullTextField
     @Column(name = "USERNAME", unique = true)

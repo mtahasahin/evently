@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/activity")
@@ -20,11 +21,11 @@ public class ActivityController {
 
     @GetMapping
     public ResponseEntity<List<ActivityDto>> getActivityFeed(Authentication authentication) {
-        return ResponseEntity.ok(activityService.getFriendActivities(Long.valueOf(authentication.getName())));
+        return ResponseEntity.ok(activityService.getFriendActivities(UUID.fromString(authentication.getName())));
     }
 
     @GetMapping("/{username}")
     public ResponseEntity<List<ActivityDto>> getUserActivities(Authentication authentication, @PathVariable String username) {
-        return ResponseEntity.ok(activityService.getUserActivities(Long.valueOf(authentication.getName()), username));
+        return ResponseEntity.ok(activityService.getUserActivities(UUID.fromString(authentication.getName()), username));
     }
 }

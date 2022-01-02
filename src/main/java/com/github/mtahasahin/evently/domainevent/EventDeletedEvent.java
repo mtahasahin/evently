@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventDeletedEvent {
-    private Long userId;
-    private Long eventId;
+    private UUID userId;
+    private UUID eventId;
 }

@@ -28,10 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -46,7 +43,7 @@ public class EventApplicationService {
     private final ApplicationEventPublisher applicationEventPublisher;
 
 
-    public EventApplicationDto getAnswer(Long userId, String eventSlug, Long applicationId) {
+    public EventApplicationDto getAnswer(UUID userId, String eventSlug, UUID applicationId) {
         var application = eventApplicationRepository.findByEventSlugAndId(eventSlug,applicationId)
                 .orElseThrow(() -> new EventApplicationNotFoundException(applicationId));
 
@@ -61,7 +58,7 @@ public class EventApplicationService {
         return convertToDto(application);
     }
 
-    public Page<EventApplicationDto> getAnswers(Long userId, String eventSlug, int page, boolean fetchAll) {
+    public Page<EventApplicationDto> getAnswers(UUID userId, String eventSlug, int page, boolean fetchAll) {
         var event = eventRepository.findBySlug(eventSlug).orElseThrow(() -> new EventNotFoundException(eventSlug));
         var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(String.valueOf(userId)));
 
@@ -80,7 +77,7 @@ public class EventApplicationService {
         return new PageImpl<>(result,pageable,applications.getTotalElements());
     }
 
-    public DisplayEventDto applyToEvent(Long userId, String eventSlug, Set<EventQuestionAnswerDto> answers) {
+    public DisplayEventDto applyToEvent(UUID userId, String eventSlug, Set<EventQuestionAnswerDto> answers) {
         var event = eventRepository.findBySlug(eventSlug).orElseThrow(() -> new EventNotFoundException(eventSlug));
         var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(String.valueOf(userId)));
 
@@ -111,7 +108,7 @@ public class EventApplicationService {
     }
 
     @Transactional
-    public void confirmApplication(Long userId, String slug, Long applicationId) {
+    public void confirmApplication(UUID userId, String slug, UUID applicationId) {
         var event = eventRepository.findBySlug(slug).orElseThrow(() -> new EventNotFoundException(slug));
         var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(String.valueOf(userId)));
 
@@ -151,7 +148,7 @@ public class EventApplicationService {
     }
 
     @Transactional
-    public void cancelEventApplication(long userId, String eventSlug) {
+    public void cancelEventApplication(UUID userId, String eventSlug) {
         var event = eventRepository.findBySlug(eventSlug).orElseThrow(() -> new EventNotFoundException(eventSlug));
         var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(String.valueOf(userId)));
         var eventApplication = event.getEventApplications().stream().filter(e -> e.getApplicant().equals(user)).findFirst().orElseThrow(() -> new EventApplicationNotFoundException("User has not applied to the event"));

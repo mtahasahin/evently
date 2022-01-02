@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserFollowedEvent {
-    private Long followerId;
-    private Long followingId;
+    private UUID followerId;
+    private UUID followingId;
 }

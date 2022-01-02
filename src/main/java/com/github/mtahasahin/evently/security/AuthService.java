@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.github.mtahasahin.evently.util.UsernameUtils.createUniqueUsername;
@@ -96,7 +97,7 @@ public class AuthService {
         return authenticate(registerRequest.getEmail(), registerRequest.getPassword());
     }
 
-    public void changePassword(long userId, ChangePasswordRequest changePasswordRequest) {
+    public void changePassword(UUID userId, ChangePasswordRequest changePasswordRequest) {
         var user = userRepository.findById(userId).orElseThrow();
         var passwordMatches = passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword());
         if (!passwordMatches) {
@@ -106,7 +107,7 @@ public class AuthService {
         userRepository.saveAndFlush(user);
     }
 
-    public void closeAccount(long userId, String password) {
+    public void closeAccount(UUID userId, String password) {
         var user = userRepository.findById(userId).orElseThrow();
         var passwordMatches = passwordEncoder.matches(password, user.getPassword());
         if (!passwordMatches) {

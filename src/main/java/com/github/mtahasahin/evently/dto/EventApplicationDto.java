@@ -6,10 +6,11 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 public class EventApplicationDto {
-    private Long id;
+    private UUID id;
     private Set<EventQuestionAnswerDto> answers;
     @JsonProperty("has_approved")
     private boolean approved;

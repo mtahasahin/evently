@@ -4,11 +4,12 @@ import com.github.mtahasahin.evently.enums.EventLocationType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Data
 public class EventDto {
-    private Long id;
+    private UUID id;
     private UserLightDto organizer;
     private String name;
     private String slug;

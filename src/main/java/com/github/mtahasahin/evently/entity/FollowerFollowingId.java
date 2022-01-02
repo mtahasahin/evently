@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
@@ -15,10 +16,10 @@ import java.util.Objects;
 @Embeddable
 public class FollowerFollowingId implements Serializable {
     @Column(name = "FOLLOWER_ID")
-    private Long followerId;
+    private UUID followerId;
 
     @Column(name = "FOLLOWING_ID")
-    private Long followingId;
+    private UUID followingId;
 
     @Override
     public boolean equals(Object o) {

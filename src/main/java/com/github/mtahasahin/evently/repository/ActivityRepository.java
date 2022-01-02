@@ -9,17 +9,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface ActivityRepository extends JpaRepository<Activity, Long> {
+public interface ActivityRepository extends JpaRepository<Activity, UUID> {
 
     @Query("select a from Activity a where a.userId in :userIds order by a.lastModifiedDate desc")
-    Slice<Activity> getActivitiesByUserId(List<Long> userIds, Pageable pageable);
+    Slice<Activity> getActivitiesByUserId(List<UUID> userIds, Pageable pageable);
 
     @Query("select a from Activity a where a.userId = :userId order by a.lastModifiedDate desc")
-    Slice<Activity> getActivitiesByUserId(Long userId, Pageable pageable);
+    Slice<Activity> getActivitiesByUserId(UUID userId, Pageable pageable);
 
-    void deleteActivityByUserIdAndObjectIdAndActivityType(Long userId, Long objectId, ActivityType activityType);
+    void deleteActivityByUserIdAndObjectIdAndActivityType(UUID userId, UUID objectId, ActivityType activityType);
 
-    int countByUserId(Long userId);
+    int countByUserId(UUID userId);
 }

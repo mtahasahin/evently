@@ -7,6 +7,7 @@ import com.github.mtahasahin.evently.validator.Language;
 import com.github.mtahasahin.evently.validator.TimeZone;
 import lombok.*;
 import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.search.engine.backend.types.Sortable;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.*;
 import org.springframework.data.domain.DomainEvents;
@@ -15,10 +16,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -38,8 +36,10 @@ public class Event extends Auditable {
     private List<Object> domainEvents = new ArrayList<>();
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "ID")
+    private UUID id;
 
     @IndexedEmbedded
     @ManyToOne(optional = false)

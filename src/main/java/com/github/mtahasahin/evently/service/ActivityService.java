@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,7 +25,7 @@ public class ActivityService {
     private final UserService userService;
     private final FollowerFollowingRepository followerFollowingRepository;
 
-    public List<ActivityDto> getFriendActivities(Long userId) {
+    public List<ActivityDto> getFriendActivities(UUID userId) {
         var friendIdList = followerFollowingRepository.getFriendsIds(userId);
         friendIdList.add(userId);
 
@@ -33,14 +34,14 @@ public class ActivityService {
         return getActivities(activities.getContent());
     }
 
-    public List<ActivityDto> getUserActivities(Long requestingUserId, String requestedUserName) {
+    public List<ActivityDto> getUserActivities(UUID requestingUserId, String requestedUserName) {
         if (!userService.canSeeProfile(requestingUserId, requestedUserName)) {
             throw new CustomAccessDeniedException();
         }
         return getActivitiesByUserId(userService.getUser(requestedUserName).getId());
     }
 
-    private List<ActivityDto> getActivitiesByUserId(Long userId) {
+    private List<ActivityDto> getActivitiesByUserId(UUID userId) {
         var activities = activityRepository.getActivitiesByUserId(userId, Pageable.ofSize(20));
         return getActivities(activities.getContent());
     }

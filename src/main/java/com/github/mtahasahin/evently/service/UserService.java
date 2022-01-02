@@ -23,6 +23,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +37,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.github.mtahasahin.evently.util.ImageUtils.extensions;
@@ -53,27 +56,45 @@ public class UserService {
 
     private static final int PAGE_SIZE = 8;
 
-    public UserDto getUser(long id) {
-        AppUser user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + id));
-        return userMapper.userToUserDto(user);
+    public AppUser getUserById(@Nullable UUID id, boolean required) {
+        if(id == null) {
+            if(required) {
+                throw new UserNotFoundException("User not found");
+            }
+            else{
+                return null;
+            }
+        }
+        return userRepository.findById(id).orElseGet(() -> {
+            if(required) {
+                throw new UserNotFoundException("User not found: " + id);
+            }
+            return null;
+        });
     }
 
-    public UserDto getUser(String username) {
-        AppUser user = userRepository.findByUsername(username)
+    public AppUser getUserByUsername(@NonNull String username) {
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
+    }
+
+    public UserDto getUser(@NonNull UUID id) {
+        AppUser user = getUserById(id, true);
         return userMapper.userToUserDto(user);
     }
 
-    public List<UserLightDto> getUsersById(List<Long> ids) {
+    public UserDto getUser(@NonNull String username) {
+        AppUser user = getUserByUsername(username);
+        return userMapper.userToUserDto(user);
+    }
+
+    public List<UserLightDto> getUsersById(@NonNull List<UUID> ids) {
         return userRepository.findAllById(ids);
     }
 
-    public Profile getProfile(long requestingUserId, String requestedUser) {
-        AppUser requestingUserEntity = userRepository.findById(requestingUserId)
-                .orElse(null);
-        AppUser requestedUserEntity = userRepository.findByUsername(requestedUser)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + requestedUser));
+    public Profile getProfile(@Nullable UUID requestingUserId,@NonNull String requestedUser) {
+        AppUser requestingUserEntity = getUserById(requestingUserId, false);
+        AppUser requestedUserEntity = getUserByUsername(requestedUser);
 
         int activityCount = activityRepository.countByUserId(requestedUserEntity.getId());
 
@@ -92,9 +113,8 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto updateUser(long id, UserDto userDto) {
-        AppUser userEntity = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + id));
+    public UserDto updateUser(@NonNull UUID id,@NonNull UserDto userDto) {
+        AppUser userEntity = getUserById(id, true);
 
         var x = userRepository.findByUsername(userDto.getUsername());
         var y = userRepository.findByEmail(userDto.getEmail());
@@ -107,7 +127,7 @@ public class UserService {
             throw new CustomValidationException(new ApiResponse.ApiSubError("email", "This email has already been taken"));
         }
 
-        var followerIds = new ArrayList<Long>();
+        var followerIds = new ArrayList<UUID>();
         if (userDto.getProfile().isProfilePublic()) {
             userEntity
                     .getFollowers()
@@ -126,11 +146,9 @@ public class UserService {
     }
 
     @Transactional
-    public ApiResponse<Object> follow(long requestingUserId, String username) {
-        AppUser userEntity = userRepository.findById(requestingUserId)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + requestingUserId));
-        AppUser userToFollow = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
+    public ApiResponse<Object> follow(@NonNull UUID requestingUserId,@NonNull String username) {
+        AppUser userEntity = getUserById(requestingUserId, true);
+        AppUser userToFollow = getUserByUsername(username);
 
         if (userEntity.isFollowing(userToFollow)) {
             return ApiResponse.Error(null, "You are already following this user");
@@ -145,11 +163,9 @@ public class UserService {
         }
     }
 
-    public ApiResponse<Object> unfollow(long requestingUserId, String username) {
-        AppUser userEntity = userRepository.findById(requestingUserId)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + requestingUserId));
-        AppUser userToFollow = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
+    public ApiResponse<Object> unfollow(@NonNull UUID requestingUserId,@NonNull String username) {
+        AppUser userEntity = getUserById(requestingUserId, true);
+        AppUser userToFollow = getUserByUsername(username);
 
         var isFollowing = userEntity.isFollowing(userToFollow);
         var hasFollowingRequest = userEntity.hasFollowingRequest(userToFollow);
@@ -168,15 +184,11 @@ public class UserService {
         }
     }
 
-    public Page<UserLightDto> getFollowers(long requestingUserId, String requestedUserUsername, int page) {
-        AppUser requestingUserEntity = userRepository.findById(requestingUserId)
-                .orElseGet(() -> null);
-        AppUser requestedUserEntity = userRepository.findByUsername(requestedUserUsername)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + requestedUserUsername));
+    public Page<UserLightDto> getFollowers(@Nullable UUID requestingUserId,@NonNull String requestedUserUsername, int page) {
+        AppUser requestingUserEntity = getUserById(requestingUserId, false);
+        AppUser requestedUserEntity = getUserByUsername(requestedUserUsername);
 
-        if (!requestedUserEntity.getUserProfile().isProfilePublic() &&
-                (requestingUserEntity == null || (requestedUserEntity != requestingUserEntity &&
-                        !requestingUserEntity.isFollowing(requestedUserEntity)))) {
+        if (!canSeeProfile(requestingUserEntity, requestedUserEntity)) {
             throw new CustomAccessDeniedException();
         }
 
@@ -191,13 +203,11 @@ public class UserService {
         return new PageImpl<UserLightDto>(result, pageable, followers.getTotalElements());
     }
 
-    public Page<UserLightDto> getFollowing(long requestingUserId, String requestedUserUsername, int page) {
-        AppUser requestingUserEntity = userRepository.findById(requestingUserId)
-                .orElseGet(() -> null);
-        AppUser requestedUserEntity = userRepository.findByUsername(requestedUserUsername)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + requestedUserUsername));
+    public Page<UserLightDto> getFollowing(@Nullable UUID requestingUserId,@NonNull String requestedUserUsername, int page) {
+        AppUser requestingUserEntity = getUserById(requestingUserId, false);
+        AppUser requestedUserEntity = getUserByUsername(requestedUserUsername);
 
-        if (!canSeeProfile(requestingUserId, requestedUserUsername)) {
+        if (!canSeeProfile(requestingUserEntity, requestedUserEntity)) {
             throw new CustomAccessDeniedException();
         }
 
@@ -214,9 +224,8 @@ public class UserService {
     }
 
 
-    public Page<UserLightDto> getFollowerRequests(long requestingUserId, String requestedUserUsername, int page) {
-        AppUser userEntity = userRepository.findById(requestingUserId)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + requestingUserId));
+    public Page<UserLightDto> getFollowerRequests(@NonNull UUID requestingUserId,@NonNull String requestedUserUsername, int page) {
+        AppUser userEntity = getUserById(requestingUserId, true);
 
         if (!userEntity.getUsername().equals(requestedUserUsername)) {
             throw new CustomAccessDeniedException("Forbidden");
@@ -234,7 +243,7 @@ public class UserService {
         return new PageImpl<UserLightDto>(result, pageable, followerRequests.getTotalElements());
     }
 
-    public ApiResponse<Object> acceptFollowerRequest(long requestingUserId, String requestedUserUsername) {
+    public ApiResponse<Object> acceptFollowerRequest(@NonNull UUID requestingUserId,@NonNull String requestedUserUsername) {
         AppUser requestedUserEntity = userRepository.findByUsername(requestedUserUsername)
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + requestedUserUsername));
 
@@ -247,7 +256,7 @@ public class UserService {
         return ApiResponse.Success(null, "Follower request accepted");
     }
 
-    public ApiResponse<Object> rejectFollowerRequest(long requestingUserId, String requestedUserUsername) {
+    public ApiResponse<Object> rejectFollowerRequest(@NonNull UUID requestingUserId,@NonNull String requestedUserUsername) {
         AppUser requestedUserEntity = userRepository.findByUsername(requestedUserUsername)
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + requestedUserUsername));
 
@@ -258,7 +267,12 @@ public class UserService {
         return ApiResponse.Success(null, "Follower request rejected");
     }
 
-    public boolean canSeeProfile(long requestingUserId, String requestedUserUsername) {
+    public boolean canSeeProfile(AppUser requestingUserEntity,AppUser requestedUserEntity) {
+        return requestedUserEntity.getUserProfile().isProfilePublic() ||
+                (requestingUserEntity != null && (requestedUserEntity == requestingUserEntity || requestingUserEntity.isFollowing(requestedUserEntity)));
+    }
+
+    public boolean canSeeProfile(UUID requestingUserId, String requestedUserUsername) {
         AppUser requestingUserEntity = userRepository.findById(requestingUserId)
                 .orElseGet(() -> null);
         AppUser requestedUserEntity = userRepository.findByUsername(requestedUserUsername)
@@ -268,9 +282,8 @@ public class UserService {
                 (requestingUserEntity != null && (requestedUserEntity == requestingUserEntity || requestingUserEntity.isFollowing(requestedUserEntity)));
     }
 
-    public ApiResponse updateAvatar(long userId, String username, MultipartFile avatar) {
-        AppUser user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + userId));
+    public ApiResponse updateAvatar(@NonNull UUID userId,@NonNull String username, MultipartFile avatar) {
+        AppUser user = getUserById(userId, true);
 
         if(!Objects.equals(user.getUsername(), username)) {
             throw new CustomAccessDeniedException();

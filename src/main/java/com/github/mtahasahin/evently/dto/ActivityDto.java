@@ -6,11 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
 public class ActivityDto {
-    private Long id;
+    private UUID id;
     private UserLightDto user;
     @JsonProperty("activity_type")
     private ActivityType activityType;

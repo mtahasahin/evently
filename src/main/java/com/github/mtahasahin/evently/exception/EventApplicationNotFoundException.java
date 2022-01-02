@@ -1,7 +1,9 @@
 package com.github.mtahasahin.evently.exception;
 
+import java.util.UUID;
+
 public class EventApplicationNotFoundException extends RuntimeException {
-    public EventApplicationNotFoundException(long id) {
+    public EventApplicationNotFoundException(UUID id) {
         super("Could not find event application with id: " + id);
     }
 

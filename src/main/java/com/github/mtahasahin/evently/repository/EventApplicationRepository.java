@@ -6,20 +6,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface EventApplicationRepository extends JpaRepository<EventApplication, Long> {
-    Optional<EventApplication> findByEventSlugAndId(String slug, Long id);
-    Optional<EventApplication> findByEventSlugAndApplicantId(String slug, Long applicantId);
-    Page<EventApplication> findAllByEventIdOrderByCreatedDateDesc(Long eventId, Pageable pageable);
-    Page<EventApplication> findAllByEventIdAndLastModifiedDateGreaterThanOrConfirmedIsFalseOrderByCreatedDateDesc(Long event_id, LocalDateTime lastModifiedDate, Pageable pageable);
-    @EntityGraph(
-            type = EntityGraph.EntityGraphType.FETCH,
-            attributePaths = {"applicant.userProfile"}
-    )
-    Slice<EventApplication> findAllByEventIdAndConfirmedIsTrueOrderByCreatedDateDesc(Long event_id, Pageable pageable);
+public interface EventApplicationRepository extends JpaRepository<EventApplication, UUID> {
+    Optional<EventApplication> findByEventSlugAndId(String slug, UUID id);
+    Optional<EventApplication> findByEventSlugAndApplicantId(String slug, UUID applicantId);
+    Page<EventApplication> findAllByEventIdOrderByCreatedDateDesc(UUID eventId, Pageable pageable);
+    Page<EventApplication> findAllByEventIdAndLastModifiedDateGreaterThanOrConfirmedIsFalseOrderByCreatedDateDesc(UUID event_id, LocalDateTime lastModifiedDate, Pageable pageable);
+    @Query("SELECT applicant.id FROM EventApplication WHERE event.id = ?1 AND confirmed = true")
+    Slice<UUID> getAllApplicants(UUID event_id, Pageable pageable);
 }

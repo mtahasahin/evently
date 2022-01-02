@@ -1,12 +1,14 @@
 package com.github.mtahasahin.evently.entity;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,9 +18,12 @@ import java.time.LocalDateTime;
 @Builder
 @Table(name = "USERPROFILES")
 public class UserProfile extends Auditable {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "ID")
+    private UUID id;
 
     @FullTextField(analyzer = "name")
     private String name;

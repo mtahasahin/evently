@@ -6,12 +6,13 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 
 @Builder
 @Data
 public class EventQuestionDto {
-    private Long id;
+    private UUID id;
     @NotNull
     private EventQuestionType type;
     private int order;

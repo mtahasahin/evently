@@ -32,31 +32,32 @@ import static com.github.mtahasahin.evently.util.ImageUtils.extensions;
 @RequiredArgsConstructor
 @Service
 public class EventService {
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final EventRepository eventRepository;
     private final EventApplicationRepository eventApplicationRepository;
     private final EventMapper eventMapper;
-    private final UserMapper userMapper;
     private final EventQuestionMapper eventQuestionMapper;
     private final S3BucketStorageService s3BucketStorageService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
+    public Event getEventBySlug(String slug) {
+        return eventRepository.findBySlug(slug)
+                .orElseThrow(() -> new EventNotFoundException("event not found: " + slug));
+    }
+
     @Transactional
-    public DisplayEventDto createEvent(Long userId, CreateUpdateEventForm form) {
-        AppUser user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("user not found: " + userId));
+    public DisplayEventDto createEvent(UUID userId, CreateUpdateEventForm form) {
+        AppUser user = userService.getUserById(userId, true);
 
         Event event = new Event();
         return saveEvent(form, user, event);
     }
 
     @Transactional
-    public DisplayEventDto updateEvent(Long userId, String eventSlug, CreateUpdateEventForm form) {
-        AppUser user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("user not found: " + userId));
+    public DisplayEventDto updateEvent(UUID userId, String eventSlug, CreateUpdateEventForm form) {
+        AppUser user = userService.getUserById(userId, true);
 
-        Event event = eventRepository.findBySlug(eventSlug)
-                .orElseThrow(() -> new EventNotFoundException("event not found: " + eventSlug));
+        Event event = getEventBySlug(eventSlug);
 
         if (!event.getOrganizer().getId().equals(userId)) {
             throw new AccessDeniedException("forbidden");
@@ -65,12 +66,10 @@ public class EventService {
         return saveEvent(form, user, event);
     }
 
-    public DisplayEventDto getEvent(Long userId, String eventSlug, String key) {
-        AppUser user = userRepository.findById(userId)
-                .orElse(null);
+    public DisplayEventDto getEvent(UUID userId, String eventSlug, String key) {
+        AppUser user = userService.getUserById(userId, false);
 
-        Event event = eventRepository.findBySlug(eventSlug)
-                .orElseThrow(() -> new EventNotFoundException("event not found: " + eventSlug));
+        Event event = getEventBySlug(eventSlug);
 
         if (!canUserViewEvent(user, event, key)) {
             throw new EventNotFoundException("event not found: " + eventSlug);
@@ -79,19 +78,18 @@ public class EventService {
         return eventMapper.eventToDisplayEventDto(event, user);
     }
 
-    public List<UserLightDto> getEventAttendees(long userId, String slug, String key, int page, int limit) {
-        AppUser user = userRepository.findById(userId)
-                .orElse(null);
-        var event = eventRepository.findBySlug(slug).orElseThrow(() -> new EventNotFoundException(slug));
+    public List<UserLightDto> getEventAttendees(UUID userId, String slug, String key, int page, int limit) {
+        AppUser user = userService.getUserById(userId, false);
+        var event = getEventBySlug(slug);
         if(!canUserViewEvent(user, event, key)) {
             throw new EventNotFoundException("event not found: " + slug);
         }
         var pageRequest = PageRequest.of(page, limit);
-        var attendees = eventApplicationRepository.findAllByEventIdAndConfirmedIsTrueOrderByCreatedDateDesc(event.getId(), pageRequest);
-        return attendees.getContent().stream().map(EventApplication::getApplicant).map(userMapper::userToUserLightDto).collect(Collectors.toList());
+        var attendees = eventApplicationRepository.getAllApplicants(event.getId(), pageRequest);
+        return userService.getUsersById(attendees.toList());
     }
 
-    public List<EventDto> getEventsById(List<Long> eventIds) {
+    public List<EventDto> getEventsById(List<UUID> eventIds) {
         List<Event> events = eventRepository.findAllById(eventIds);
 
         return events
@@ -123,12 +121,10 @@ public class EventService {
         return eventMapper.eventToDisplayEventDto(event, user);
     }
 
-    public List<EventQuestionDto> updateEventQuestions(Long userId, String eventSlug, List<EventQuestionDto> questionsDto) {
-        AppUser user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("user not found: " + userId));
+    public List<EventQuestionDto> updateEventQuestions(UUID userId, String eventSlug, List<EventQuestionDto> questionsDto) {
+        AppUser user = userService.getUserById(userId, true);
 
-        Event event = eventRepository.findBySlug(eventSlug)
-                .orElseThrow(() -> new EventNotFoundException("event not found: " + eventSlug));
+        Event event = getEventBySlug(eventSlug);
 
         if (!event.getOrganizer().getId().equals(userId)) {
             throw new CustomAccessDeniedException("You are not the organizer of this event");
@@ -180,12 +176,10 @@ public class EventService {
 
 
     @Transactional
-    public void removeEvent(long userId, String eventSlug) {
-        AppUser user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("user not found: " + userId));
+    public void removeEvent(UUID userId, String eventSlug) {
+        AppUser user = userService.getUserById(userId, true);
 
-        Event event = eventRepository.findBySlug(eventSlug)
-                .orElseThrow(() -> new EventNotFoundException("event not found: " + eventSlug));
+        Event event = getEventBySlug(eventSlug);
 
         if (!event.getOrganizer().getId().equals(userId)) {
             throw new AccessDeniedException("forbidden");

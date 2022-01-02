@@ -7,11 +7,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.util.UUID;
 
 @Data
 @Builder
 public class UserDto {
-    private Long id;
+    private UUID id;
     @Email
     private String email;
     @NotBlank

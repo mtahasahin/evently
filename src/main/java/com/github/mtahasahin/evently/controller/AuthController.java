@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,6 +18,7 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @PreAuthorize("isAnonymous()")
     @PostMapping(path = "/login")
     public AuthenticationResponse login(@Valid @RequestBody final LoginRequest loginRequest) {
         return authService.login(loginRequest);
@@ -27,6 +29,7 @@ public class AuthController {
         return authService.refreshToken(refreshTokenRequest);
     }
 
+    @PreAuthorize("isAnonymous()")
     @PostMapping(path = "/register")
     public AuthenticationResponse register(@Valid @RequestBody final RegisterRequest registerRequest) {
         return authService.registerUser(registerRequest);
@@ -35,14 +38,14 @@ public class AuthController {
     @PreAuthorize("isAuthenticated()")
     @PutMapping(path = "/change-password")
     public ApiResponse<Object> changePassword(Authentication authentication, @Valid @RequestBody final ChangePasswordRequest changePasswordRequest) {
-        authService.changePassword(Long.parseLong(authentication.getName()), changePasswordRequest);
+        authService.changePassword(UUID.fromString(authentication.getName()), changePasswordRequest);
         return ApiResponse.Success(null, "Password is changed successfully.");
     }
 
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping(path = "/close-account")
-    public ApiResponse<Object> closeAccount(Authentication authentication, final String password) {
-        authService.closeAccount(Long.parseLong(authentication.getName()), password);
+    public ApiResponse<Object> closeAccount(Authentication authentication,@RequestParam final String password) {
+        authService.closeAccount(UUID.fromString(authentication.getName()), password);
         return ApiResponse.Success(null);
     }
 

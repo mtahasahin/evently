@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 
 import static io.jsonwebtoken.security.Keys.hmacShaKeyFor;
 
@@ -22,7 +23,7 @@ public class JwtTokenProvider {
         this.jwtConfig = jwtConfig;
     }
 
-    public String generateAccessToken(long userId, Collection<String> authorities) {
+    public String generateAccessToken(UUID userId, Collection<String> authorities) {
         long now = System.currentTimeMillis();
         return Jwts.builder()
                 .setSubject(String.valueOf(userId))
@@ -33,7 +34,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String generateRefreshToken(long userId) {
+    public String generateRefreshToken(UUID userId) {
         long now = System.currentTimeMillis();
         return Jwts.builder()
                 .setSubject(String.valueOf(userId))

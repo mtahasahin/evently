@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import java.util.UUID;
+
 @Data
 @Document(indexName = "user_index")
 public class UserSearchDto {
-    private Long id;
+    private UUID id;
     private String username;
     @JsonProperty("profile")
     private ProfileSearchDto userProfile;

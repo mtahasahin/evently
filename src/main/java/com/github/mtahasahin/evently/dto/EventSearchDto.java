@@ -6,11 +6,12 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.UUID;
 
 @Data
 @Document(indexName = "event_index")
 public class EventSearchDto {
-    private Long id;
+    private UUID id;
     private UserSearchDto organizer;
     private String slug;
     private String name;

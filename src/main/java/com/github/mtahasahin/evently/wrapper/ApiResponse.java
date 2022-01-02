@@ -45,6 +45,7 @@ public class ApiResponse<T> implements Serializable {
 
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class ApiSubError {
         private String field;
         private String message;
