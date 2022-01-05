@@ -33,19 +33,21 @@ public class EventFormValidator implements Validator {
             errors.rejectValue("attendeeLimit", null, "can not be less than 2");
         }
 
-        if(eventForm.getStartDate().isAfter(eventForm.getEndDate())){
+        if (eventForm.getStartDate().isAfter(eventForm.getEndDate())) {
             errors.rejectValue("endDate", null, "can not be before start date");
         }
 
         ZoneId zoneId = ZoneId.of(eventForm.getTimezone());
         OffsetDateTime startDate = eventForm.getStartDate().atZone(zoneId).toOffsetDateTime();
-        if(startDate.isBefore(OffsetDateTime.now())){
+        if (startDate.isBefore(OffsetDateTime.now())) {
             errors.rejectValue("startDate", null, "can not be before current date");
         }
 
-        var imageValidationResult = ImageUtils.isValid(eventForm.getImage(), 5 * 1024 * 1024, 675, 1200);
-        if(!imageValidationResult.getData()){
-            errors.rejectValue("image", null, imageValidationResult.getMessage());
+        if (eventForm.getImage() != null) {
+            var imageValidationResult = ImageUtils.isValid(eventForm.getImage(), 5 * 1024 * 1024, 675, 1200);
+            if (!imageValidationResult.getData()) {
+                errors.rejectValue("image", null, imageValidationResult.getMessage());
+            }
         }
     }
 }

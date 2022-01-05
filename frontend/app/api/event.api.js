@@ -108,7 +108,7 @@ const editEvent = ({
     visibility,
   });
 
-  return AxiosInstance.put(EDIT_EVENT_URL(slug), formData, {
+  return AxiosInstance.post(EDIT_EVENT_URL(slug), formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },

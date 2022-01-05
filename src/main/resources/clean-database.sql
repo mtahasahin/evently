@@ -1,0 +1,9 @@
+DELETE from follower_following;
+DELETE from activity;
+DELETE from event_question_answers;
+DELETE from eventquestions;
+DELETE from event_applications;
+DELETE from events;
+DELETE from user_authorities;
+DELETE from userprofiles;
+DELETE FROM users;

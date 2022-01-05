@@ -91,6 +91,13 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(QuestionOrderNotValidException.class)
+    public ResponseEntity<ApiResponse<Object>> questionOrderNotValidException(QuestionOrderNotValidException ex) {
+        return new ResponseEntity<>(ApiResponse.Error(null, ex.getMessage(),
+                null),
+                HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiResponse<Object>> badCredentialsException(BadCredentialsException ex) {
         return new ResponseEntity<>(ApiResponse.Error(null, "Email and password do not match"),

@@ -1,6 +1,5 @@
 package com.github.mtahasahin.evently.util;
 
-import com.github.mtahasahin.evently.exception.CustomValidationException;
 import com.github.mtahasahin.evently.wrapper.ApiResponse;
 import org.apache.tika.Tika;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,9 +26,6 @@ public class ImageUtils {
 
     public static ApiResponse<Boolean> isValid(MultipartFile image, int maxSize, int minHeight, int minWidth) {
         var tika = new Tika();
-        if (image == null) {
-            throw new CustomValidationException(new ApiResponse.ApiSubError("image", "Image is required"));
-        }
         try {
             var mimeType = tika.detect(image.getBytes());
             if(!allowedMimeTypes.contains(mimeType)) {

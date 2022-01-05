@@ -3,6 +3,8 @@ package com.github.mtahasahin.evently.controller;
 import com.github.mtahasahin.evently.dto.CreateUpdateEventForm;
 import com.github.mtahasahin.evently.dto.EventQuestionAnswerDto;
 import com.github.mtahasahin.evently.dto.EventQuestionDto;
+import com.github.mtahasahin.evently.dto.validationgroups.CreateEventValidationGroup;
+import com.github.mtahasahin.evently.dto.validationgroups.UpdateEventValidationGroup;
 import com.github.mtahasahin.evently.service.EventApplicationService;
 import com.github.mtahasahin.evently.service.EventService;
 import com.github.mtahasahin.evently.validator.EventFormValidator;
@@ -18,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -44,11 +45,13 @@ public class EventController {
     }
 
     @PostMapping(consumes = "multipart/form-data")
+    @Validated(CreateEventValidationGroup.class)
     public ResponseEntity<?> createEvent(Authentication authentication, @Valid @ModelAttribute("form") CreateUpdateEventForm form) {
         return new ResponseEntity<>(eventService.createEvent(UUID.fromString(authentication.getName()), form), HttpStatus.CREATED);
     }
 
-    @PutMapping(path = "/{slug}", consumes = "multipart/form-data")
+    @PostMapping(path = "/{slug}", consumes = "multipart/form-data")
+    @Validated(UpdateEventValidationGroup.class)
     public ResponseEntity<?> updateEvent(Authentication authentication, @PathVariable String slug, @Valid @ModelAttribute("form") CreateUpdateEventForm form) {
         return new ResponseEntity<>(eventService.updateEvent(UUID.fromString(authentication.getName()), slug, form), HttpStatus.OK);
     }
@@ -75,7 +78,7 @@ public class EventController {
         return new ResponseEntity<>(eventApplicationService.getAnswers(UUID.fromString(authentication.getName()), slug, page, false), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/{slug}/answers/{applicationId}")
+    @GetMapping(path = "/{slug}/answers/{applicationId:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$}")
     public ResponseEntity<?> getAnswer(Authentication authentication, @PathVariable String slug, @PathVariable UUID applicationId) {
         return new ResponseEntity<>(eventApplicationService.getAnswer(UUID.fromString(authentication.getName()), slug, applicationId), HttpStatus.OK);
     }

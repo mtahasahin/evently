@@ -15,7 +15,7 @@ import java.util.Objects;
 public class FollowerFollowing extends Auditable {
 
     @EmbeddedId
-    private FollowerFollowingId id;
+    private FollowerFollowingId id = new FollowerFollowingId();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("followerId")

@@ -16,8 +16,10 @@ import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<AppUser, UUID> {
 
-    Optional<AppUser> findById(@Nullable UUID id);
+    @EntityGraph(type=EntityGraph.EntityGraphType.FETCH, attributePaths={"authorities"})
+    Optional<AppUser> findById(UUID id);
 
+    @EntityGraph(type=EntityGraph.EntityGraphType.FETCH, attributePaths={"authorities"})
     Optional<AppUser> findByUsername(String username);
 
     @EntityGraph(type=EntityGraph.EntityGraphType.FETCH, attributePaths={"authorities"})

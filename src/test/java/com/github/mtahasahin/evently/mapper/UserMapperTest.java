@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -77,13 +78,16 @@ class UserMapperTest {
                         .build())
                 .build();
 
+        UUID userUUID = UUID.randomUUID();
+        UUID profileUUID = UUID.randomUUID();
+
         AppUser user = AppUser.builder()
-                .id(1L)
+                .id(userUUID)
                 .username("user")
                 .password("password")
                 .email("user@example.com")
                 .userProfile(UserProfile.builder()
-                        .id(2L)
+                        .id(profileUUID)
                         .profilePublic(true)
                         .name("name lastname")
                         .about("about")
@@ -103,9 +107,9 @@ class UserMapperTest {
 
         assertEquals(user.getEmail(), userDto.getEmail());
         assertEquals(user.getUsername(), userDto.getUsername());
-        assertEquals(1L, user.getId());
+        assertEquals(userUUID, user.getId());
         assertEquals("password", user.getPassword());
-        assertEquals(2L, profile.getId());
+        assertEquals(profileUUID, profile.getId());
         assertEquals(profileDto.getAbout(), profile.getAbout());
         assertEquals(profileDto.getName(), profile.getName());
         assertEquals(profileDto.isProfilePublic(), profile.isProfilePublic());

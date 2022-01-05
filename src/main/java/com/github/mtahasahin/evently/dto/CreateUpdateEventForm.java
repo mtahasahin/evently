@@ -1,5 +1,6 @@
 package com.github.mtahasahin.evently.dto;
 
+import com.github.mtahasahin.evently.dto.validationgroups.CreateEventValidationGroup;
 import com.github.mtahasahin.evently.enums.EventLocationType;
 import com.github.mtahasahin.evently.enums.EventVisibility;
 import com.github.mtahasahin.evently.validator.Language;
@@ -31,7 +32,7 @@ public class CreateUpdateEventForm {
     @NotBlank
     @TimeZone
     private String timezone;
-    @NotNull
+    @NotNull(groups = {CreateEventValidationGroup.class})
     private MultipartFile image;
     @NotBlank
     private String description;
