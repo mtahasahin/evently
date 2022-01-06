@@ -69,7 +69,7 @@ public class EventApplicationService {
         Pageable pageable = PageRequest.of(page, 5);
         var applications = fetchAll ?
                 eventApplicationRepository.findAllByEventIdOrderByCreatedDateDesc(event.getId(), pageable) :
-                eventApplicationRepository.findAllByEventIdAndLastModifiedDateGreaterThanOrConfirmedIsFalseOrderByCreatedDateDesc(event.getId(), LocalDateTime.now().minusHours(1), pageable);
+                eventApplicationRepository.findNotConfirmedEventApplications(event.getId(), LocalDateTime.now().minusHours(1), pageable);
 
         List<EventApplicationDto> result = new ArrayList<>();
         applications.getContent().forEach((application) -> result.add(convertToDto(application)));
