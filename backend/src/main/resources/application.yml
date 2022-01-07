@@ -1,0 +1,98 @@
+spring:
+  datasource:
+    #url: #jdbc url of the database
+    #username: #login username of the database
+    #password: #login password of the database
+  main:
+    lazy-initialization: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  jpa:
+    properties:
+      dialect: "org.hibernate.dialect.PostgreSQLDialect"
+      hibernate:
+        search:
+          schema_management:
+            strategy: "drop-and-create"
+          backend:
+            #uris: #elasticsearch url (including http://)
+            layout:
+              strategy: "no-alias"
+            analysis:
+              configurer: "class:com.github.mtahasahin.evently.config.MyElasticsearchAnalysisConfigurer"
+
+  liquibase:
+    change-log: "classpath:db/changelog/db.changelog-master.xml"
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: "YOUR_CLIENT_ID" # your google client id
+            clientSecret: "YOUR_CLIENT_SECRET" # your google client secret
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            scope:
+              - email
+              - profile
+          facebook:
+            clientId: "YOUR_CLIENT_ID" # your facebook client id
+            clientSecret: "YOUR_CLIENT_SECRET" # your facebook client secret
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}" # Note that facebook now mandates the use of https redirect URIs, so make sure your app supports https in production
+            scope:
+              - email
+              - public_profile
+        provider:
+          facebook:
+            authorizationUri: https://www.facebook.com/v3.0/dialog/oauth
+            tokenUri: https://graph.facebook.com/v3.0/oauth/access_token
+            userInfoUri: https://graph.facebook.com/v3.0/me?fields=id,first_name,middle_name,last_name,name,email,verified,picture.width(250).height(250)
+
+
+logging:
+  level:
+    com:
+      amazonaws:
+        internal:
+          InstanceMetadataServiceResourceFetcher: error
+        util:
+          EC2MetadataUtils: error
+
+cloud:
+  aws:
+    region:
+      #static: #s3 region
+    stack:
+      auto: false
+    credentials:
+      #access-key: #s3 access key
+      #secret-key: #s3 secret key
+
+security:
+  jwt:
+    uri: /auth/**
+    access-token-expiration: 30000000
+    secret: youshoulddefinitelychangethispassword
+    refresh-token-expiration: 31622400
+
+server:
+  port: 8080
+
+app:
+  bucket:
+    # name: #s3 bucket name
+  elasticsearch:
+    host: #elasticsearch url (without http://)
+  cors:
+    allowedOrigins: http://localhost:3000 # Comma separated list of allowed origins
+  oauth2:
+    # After successfully authenticating with the OAuth2 Provider,
+    # we'll be generating an auth token for the user and sending the token to the
+    # redirectUri mentioned by the client in the /oauth2/authorize request.
+    # We're not using cookies because they won't work well in mobile clients.
+    authorizedRedirectUris:
+      - http://localhost:3000/oauth2/redirect
+      - myandroidapp://oauth2/redirect
+      - myiosapp://oauth2/redirect

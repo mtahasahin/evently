@@ -1,6 +1,7 @@
 module.exports = {
   images: {
     domains: [
+      'localhost',
       'i.pravatar.cc',
       'evently-amazon-storage.s3.eu-central-1.amazonaws.com',
       'picsum.photos',

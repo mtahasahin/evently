@@ -1,10 +1,10 @@
-HELP.md
+backend/HELP.md
 target/
-!.mvn/wrapper/maven-wrapper.jar
+!backend/.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-src/main/resources/application-dev.yml
-.jpb/
+backend/src/main/resources/application-dev.yml
+backend/.jpb/
 
 ### STS ###
 .apt_generated

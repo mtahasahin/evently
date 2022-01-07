@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_HOST_URL + "/api";
 
 export const PROFILE_URL = BASE_URL + '/profile';
 export const AUTH_URL = BASE_URL + '/auth';

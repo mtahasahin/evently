@@ -1,0 +1,56 @@
+version: '2'
+
+services:
+  frontend:
+    build:
+      context: frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - "backend"
+    environment:
+      - "NEXT_PUBLIC_HOST_URL=http://localhost:8080"
+      - "NEXT_PUBLIC_BASE_URL=http://localhost:3000"
+
+  backend:
+    build:
+      context: backend
+    image: evently
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "database"
+      - "elastic"
+    environment:
+      #- "SPRING_PROFILES_ACTIVE=s3" #uncomment this to use s3 bucket for storage
+      - "SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/evently"
+      - "SPRING_DATASOURCE_USERNAME=postgres"
+      - "SPRING_DATASOURCE_PASSWORD=mysecretpassword"
+      - "SPRING_JPA_PROPERTIES_HIBERNATE_SEARCH_BACKEND_URIS=http://elastic:9200"
+      - "APP_ELASTICSEARCH_HOST=elastic:9200"
+    restart: always
+
+  database:
+    image: postgres:14.1
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DB=evently
+
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+    ports:
+      - "9200:9200"
+    environment:
+      - "discovery.type=single-node"
+      - "xpack.security.enabled=false"
+      - "bootstrap.memory_lock=true"
+      - "cluster.name=evently"
+      - "http.cors.enabled=true"
+      - "http.cors.allow-origin=*"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
