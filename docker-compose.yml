@@ -8,9 +8,6 @@ services:
       - "3000:3000"
     depends_on:
       - "backend"
-    environment:
-      - "NEXT_PUBLIC_HOST_URL=http://localhost:8080"
-      - "NEXT_PUBLIC_BASE_URL=http://localhost:3000"
 
   backend:
     build:
