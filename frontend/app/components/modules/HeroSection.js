@@ -25,9 +25,9 @@ function HeroSection() {
                   Organize an Event
                 </a>
               </Link>
-              <Link href="/why">
+              <Link href="/events">
                 <a className="py-2 sm:py-4 px-5 sm:px-7 rounded max-w-full font-bold text-white sm:text-lg border">
-                  Learn More
+                  Explore Events
                 </a>
               </Link>
             </div>

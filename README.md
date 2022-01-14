@@ -26,15 +26,6 @@
 
 
 
-<hr/>
-<div align="center">
-<h3 align="center">🚧🚧🚧WORK IN PROGRESS🚧🚧🚧</h3>
-Project is not yet completed. You might get 404 for some pages.
-</div>
-<hr/>
-
-
-
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>

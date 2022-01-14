@@ -41,9 +41,6 @@ function MobileNavbar({ closeMenu }) {
               >
                 Events
               </NavbarItem>
-              <NavbarItem href="/why-evently" onClick={closeMenu}>
-                Why Evently?
-              </NavbarItem>
             </ul>
           </div>
           <div className="absolute bottom-2 left-0 flex flex-col gap-y-2 w-full p-2">
@@ -149,11 +146,6 @@ function Header() {
                 <Link href={authenticated ? '/explore/events' : '/events'}>
                   <a className="text-gray-500 hover:text-gray-800 whitespace-nowrap">
                     Events
-                  </a>
-                </Link>
-                <Link href="/why">
-                  <a className="text-gray-500 hover:text-gray-800 whitespace-nowrap">
-                    Why Evently?
                   </a>
                 </Link>
               </div>
