@@ -62,6 +62,11 @@ public class EventController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping(path = "/my-events")
+    public ResponseEntity<?> getMyEvents(Authentication authentication, @RequestParam int page, @RequestParam int limit, @RequestParam boolean past) {
+        return new ResponseEntity<>(eventService.getEventsByOrganizerId(UUID.fromString(authentication.getName()), page, limit, past), HttpStatus.OK);
+    }
+
     @PreAuthorize("permitAll()")
     @GetMapping(path = "/{slug}/attendees")
     public ResponseEntity<?> getEventAttendees(Authentication authentication, @PathVariable String slug, @RequestParam(required = false) String key, @RequestParam int page, @RequestParam int limit) {

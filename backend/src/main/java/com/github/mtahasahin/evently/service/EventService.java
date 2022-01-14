@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -93,6 +94,21 @@ public class EventService {
         return events
                 .stream()
                 .map(eventMapper::eventToEventDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<EventSearchDto> getEventsByOrganizerId(UUID organizerId, int page, int limit, boolean past) {
+        var pageRequest = PageRequest.of(page, limit);
+        List<Event> events = null;
+        if (past) {
+            events = eventRepository.getEventsByOrganizerIdAndStartDateBeforeOrderByStartDateDesc(organizerId, LocalDateTime.now(), pageRequest).getContent();
+        }
+        else{
+            events = eventRepository.getEventsByOrganizerIdAndStartDateAfterOrderByStartDateAsc(organizerId, LocalDateTime.now(), pageRequest).getContent();
+        }
+        return events
+                .stream()
+                .map(eventMapper::toEventSearchDto)
                 .collect(Collectors.toList());
     }
 

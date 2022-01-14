@@ -1,9 +1,6 @@
 package com.github.mtahasahin.evently.mapper;
 
-import com.github.mtahasahin.evently.dto.CreateUpdateEventForm;
-import com.github.mtahasahin.evently.dto.DisplayEventDto;
-import com.github.mtahasahin.evently.dto.EventDto;
-import com.github.mtahasahin.evently.dto.EventQuestionDto;
+import com.github.mtahasahin.evently.dto.*;
 import com.github.mtahasahin.evently.entity.AppUser;
 import com.github.mtahasahin.evently.entity.Event;
 import com.github.mtahasahin.evently.enums.EventLocationType;
@@ -95,4 +92,6 @@ public abstract class EventMapper {
 
         dto.setDescription(policy.sanitize(dto.getDescription()));
     }
+
+    public abstract EventSearchDto toEventSearchDto(Event entity);
 }

@@ -44,7 +44,7 @@ const EventCard = ({ event, timezone }) => {
             </div>
           </div>
           <div className="text-sm text-gray-600 font-light">
-            {event.attendeeCount} members{' '}
+            {event.attendeeCount+1} members{' '}
             {event.eventEnded ? 'went' : 'are joining'} to the event
           </div>
         </div>

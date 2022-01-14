@@ -13,11 +13,13 @@ public class UserSearchDto {
     private String username;
     @JsonProperty("profile")
     private ProfileSearchDto userProfile;
+
+    @Data
+    public static class ProfileSearchDto {
+        private String name;
+        private String about;
+        private String avatar;
+    }
 }
 
-@Data
-class ProfileSearchDto {
-    private String name;
-    private String about;
-    private String avatar;
-}
+
