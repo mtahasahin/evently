@@ -1,6 +1,7 @@
 module.exports = {
   images: {
     domains: [
+      'eventlydemo.xyz',
       'localhost',
       'i.pravatar.cc',
       'evently-amazon-storage.s3.eu-central-1.amazonaws.com',
